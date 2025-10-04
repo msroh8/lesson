@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدرس التفاعلي: دورة حياة النظام</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --bg-color: #ecf0f1;
+            --text-color: #34495e;
+            --light-gray: #bdc3c7;
+            --card-bg: #ffffff;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --gold-medal: #ffd700;
+            --silver-medal: #c0c0c0;
+            --bronze-medal: #cd7f32;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+
+        .main-content {
+            display: flex;
+        }
+
+        nav {
+            width: 200px;
+            background-color: #34495e;
+            padding: 15px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        nav h3 {
+            margin-top: 0;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            padding: 12px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 1.1em;
+        }
+
+        nav li:hover, nav li.active {
+            background-color: var(--secondary-color);
+        }
+
+        .content-area {
+            flex-grow: 1;
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: var(--primary-color);
+            font-size: 1.5em;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .section-header h2 {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        .question-icon {
+            font-size: 1.5em;
+            color: var(--secondary-color);
+            cursor: pointer;
+            background: #f1f1f1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        .question-icon:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .illustration {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        table.styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .styled-table thead tr {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-align: right;
+        }
+        
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .checklist li {
+            list-style-type: '☑';
+            padding-right: 10px;
+            margin-bottom: 5px;
+        }
+
+        /* --- Management Box --- */
+        .management-box {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 250px;
+            background: var(--card-bg);
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 15px;
+            z-index: 1000;
+        }
+        
+        .management-box h4 {
+            margin: 0 0 10px 0;
+            text-align: center;
+            color: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .management-box h4::after {
+            content: '−';
+            font-weight: bold;
+            padding: 0 5px;
+        }
+        .management-box.collapsed h4::after {
+            content: '+';
+        }
+        .management-box.collapsed .management-box-content {
+            display: none;
+        }
+        .management-box-content {
+            animation: fadeIn 0.5s;
+        }
+
+        .timer {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .timer-controls button {
+            margin: 0 5px;
+        }
+        
+        .management-box button, .btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .management-box button:hover, .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-danger { background-color: var(--accent-color); }
+        .btn-danger:hover { background-color: #c0392b; }
+        .btn-success { background-color: var(--success-color); }
+        .btn-success:hover { background-color: #27ae60; }
+        .btn-warning { background-color: var(--warning-color); }
+        .btn-warning:hover { background-color: #e67e22; }
+
+        select, input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--light-gray);
+            box-sizing: border-box;
+        }
+
+        #student-list {
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        #student-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        #student-list input {
+            border: none;
+            background: transparent;
+            width: 60%;
+        }
+        #student-list button {
+            font-size: 0.8em;
+            padding: 2px 5px;
+        }
+        
+        .add-student-form {
+            display: flex;
+            margin-top: 10px;
+        }
+        .add-student-form input {
+            flex-grow: 1;
+            margin-bottom: 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .add-student-form button {
+            border-radius: 5px 0 0 5px;
+            padding: 8px;
+        }
+
+        /* --- Modal --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 25px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 10px;
+            position: relative;
+            animation: slideIn 0.4s;
+        }
+        @keyframes slideIn {
+            from { top: -100px; opacity: 0; }
+            to { top: 0; opacity: 1; }
+        }
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover, .close-btn:focus {
+            color: black;
+        }
+
+        /* --- Story & Quizzes --- */
+        .story-box {
+            background-color: #fdfaf4;
+            border-right: 5px solid #f39c12;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .story-box h3 {
+            color: #d35400;
+        }
+        
+        .quiz-container {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+        .quiz-question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .quiz-options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #e9e9e9;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-options label:hover {
+            background: #dcdcdc;
+        }
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+        .quiz-feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .quiz-feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* --- Interactive Activities --- */
+        .knowledge-bulletin {
+            background-color: #eaf5ff;
+            border-right: 5px solid var(--secondary-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .click-track-activity {
+            margin: 20px 0;
+        }
+        .track-item {
+            background-color: #f1f1f1;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .track-item:hover {
+            background-color: #e0e0e0;
+        }
+        .track-item .content {
+            display: none;
+            margin-top: 10px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+        .track-item.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .track-item.active .content {
+            display: block;
+        }
+
+        .classroom-activity {
+            background-color: #fef5e7;
+            border-right: 5px solid #f39c12;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .classroom-activity ul {
+            padding-right: 20px;
+        }
+        .classroom-activity ol {
+            padding-right: 20px;
+        }
+        .step {
+            margin-bottom: 15px;
+        }
+        .step strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+
+        /* --- Game --- */
+        .matching-game {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .game-column {
+            width: 48%;
+        }
+        .game-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: grab;
+            background: white;
+            text-align: center;
+        }
+        .game-item.selected {
+            border-color: var(--secondary-color);
+            background-color: #eaf5ff;
+        }
+        .game-item.correct {
+            border-color: var(--success-color);
+            background-color: #d4edda;
+            cursor: default;
+        }
+        #game-feedback {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 1.2em;
+        }
+        
+        /* --- Report --- */
+        #report-page h3 {
+             margin-top: 30px;
+        }
+        #report-page table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        #report-page th, #report-page td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+        #report-page th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        /* --- Notification --- */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s, bottom 0.5s;
+        }
+        .notification.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 40px;
+        }
+        
+        /* --- Follow-up Modal (IMPROVED) --- */
+        #followup-modal .modal-header {
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        #followup-modal .modal-header h3, #followup-modal .modal-header p {
+            margin: 5px 0;
+        }
+        #followup-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #followup-table th, #followup-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        #followup-table th {
+            background-color: #f2f2f2;
+        }
+        #followup-table td:first-child {
+            text-align: right;
+            width: 35%;
+        }
+        .status-cell {
+            cursor: pointer;
+            font-size: 1.5em;
+            font-weight: bold;
+            width: 15%;
+        }
+        .status-cell.checked { color: var(--success-color); }
+        .status-cell.crossed { color: var(--accent-color); }
+        
+        .participation-cell {
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .behavior-cell input {
+            width: 90%;
+            padding: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        #followup-modal .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Management Box -->
+    <div class="management-box" id="management-box">
+        <h4 id="management-box-header">إدارة الحصة</h4>
+        <div class="management-box-content">
+            <div class="timer" id="timer-display">00:00</div>
+            <div class="timer-controls" style="text-align: center; margin-bottom: 15px;">
+                <button id="start-timer">بدء</button>
+                <button id="pause-timer">إيقاف</button>
+                <button id="reset-timer">إعادة</button>
+            </div>
+            <button id="open-followup-btn" style="width: 100%; margin-bottom: 10px;">كشف المتابعة</button>
+            
+            <hr>
+
+            <label for="class-select">اختر الفصل:</label>
+            <select id="class-select">
+                <optgroup label="الفصول">
+                    <option value="301">301</option>
+                    <option value="302">302</option>
+                </optgroup>
+                <optgroup label="فصول أخرى">
+                    <option value="101">101</option>
+                    <option value="102">102</option>
+                </optgroup>
+            </select>
+            
+            <ul id="student-list">
+                <!-- Student list will be populated by JS -->
+            </ul>
+            <div class="add-student-form">
+                <input type="text" id="new-student-name" placeholder="اسم الطالب الجديد">
+                <button id="add-student-btn">إضافة</button>
+            </div>
+
+            <label for="strategy-select" style="margin-top: 10px;">استراتيجية التدريس:</label>
+            <select id="strategy-select">
+                <option>التعلم التعاوني</option>
+                <option>المحاضرة التفاعلية</option>
+                <option>الاستقصاء الموجه</option>
+                <option>المناقشة والحوار</option>
+                <option>التعلم المدمج</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1 id="lesson-title">دورة حياة النظام</h1>
+        </header>
+
+        <div class="main-content">
+            <nav>
+                <h3>قائمة الدرس</h3>
+                <ul id="nav-menu">
+                    <li data-page="intro" class="active">المقدمة والقصة</li>
+                    <li data-page="diagnostic-quiz">تقويم تشخيصي</li>
+                    <li data-page="section1">مراحل دورة الحياة</li>
+                    <li data-page="section5">جمع المتطلبات</li>
+                    <li data-page="in-class-activity">نشاط صفي</li>
+                    <li data-page="section2">التحليل والتصميم</li>
+                    <li data-page="section3">التطوير والتنفيذ</li>
+                    <li data-page="section4">الصيانة والتوثيق</li>
+                    <li data-page="game">لعبة توصيل المفاهيم</li>
+                    <li data-page="formative-assessment">تقويم تكويني</li>
+                    <li data-page="report">تقرير الحصة</li>
+                </ul>
+            </nav>
+
+            <main class="content-area">
+                <!-- Page 1: Introduction & Story -->
+                <div id="intro-page" class="page active">
+                    <div class="section-header">
+                        <h2>تمهيد: قصة بناء تطبيق سياحي</h2>
+                    </div>
+                     <div class="story-box">
+                        <h3>قصة تطبيق "مرشدك السياحي" الافتراضي</h3>
+                        <p>لنتخيل أننا نريد إنشاء تطبيق هاتف ذكي لمساعدة كبار السن وذوي الاحتياجات الخاصة (مثل ضعف البصر أو ارتعاش الأيدي) على استكشاف المعالم السياحية في المملكة العربية السعودية. قبل كتابة سطر برمجي واحد، يجب أن نمر بدورة حياة كاملة لضمان نجاح التطبيق.</p>
+                        <p>تبدأ القصة بالاستماع للمستخدمين (التحليل)، ثم رسم شكل التطبيق على الورق (التصميم)، ثم بناء نسخة أولية (التطوير)، ثم جعل المستخدمين يجربونه (الاختبار)، ثم إطلاقه للجميع (التنفيذ)، وأخيراً الاستماع لملاحظاتهم لتحسينه باستمرار (الصيانة). كل خطوة تعتمد على التي قبلها، وتجاهل أي خطوة قد يؤدي إلى بناء تطبيق لا يستخدمه أحد.</p>
+                        <h3>فوائد مستخلصة من القصة:</h3>
+                        <ul>
+                            <li><strong>البداية الصحيحة:</strong> فهم المشكلة واحتياجات المستخدمين في مرحلة التحليل هو أساس بناء نظام ناجح.</li>
+                            <li><strong>التخطيط قبل التنفيذ:</strong> مرحلة التصميم تضمن أن المنتج النهائي سيكون منظمًا وسهل الاستخدام قبل استثمار الوقت والمال في البرمجة.</li>
+                            <li><strong>التحسين المستمر:</strong> دورة حياة النظام لا تنتهي عند إطلاق المنتج، بل تستمر من خلال الصيانة والتحديثات لتلبية الاحتياجات المتغيرة.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Page 2: Diagnostic Quiz -->
+                <div id="diagnostic-quiz-page" class="page">
+                    <h2>تقويم تشخيصي</h2>
+                    <p>أجب عن الأسئلة التالية لقياس معرفتك المبدئية بالموضوع.</p>
+                    <div class="quiz-container" id="diag-quiz1">
+                        <p class="quiz-question">1. ما هي أول مرحلة في دورة حياة النظام؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="q1" value="a"> التصميم</label>
+                            <label><input type="radio" name="q1" value="b"> التحليل</label>
+                            <label><input type="radio" name="q1" value="c"> التطوير</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('diag-quiz1', 'b', 'q1')">تحقق من الإجابة</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-container" id="diag-quiz2">
+                        <p class="quiz-question">2. في أي مرحلة يتم كتابة الكود البرمجي الفعلي للنظام؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="q2" value="a"> التطوير</label>
+                            <label><input type="radio" name="q2" value="b"> التحليل</label>
+                            <label><input type="radio" name="q2" value="c"> الاختبار</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('diag-quiz2', 'a', 'q2')">تحقق من الإجابة</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-container" id="diag-quiz3">
+                        <p class="quiz-question">3. ما هو الهدف من مرحلة الصيانة؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="q3" value="a"> إطلاق النظام للمستخدمين.</label>
+                            <label><input type="radio" name="q3" value="b"> تصميم واجهة المستخدم.</label>
+                            <label><input type="radio" name="q3" value="c"> إصلاح الأخطاء وإضافة تحسينات بعد إطلاق النظام.</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('diag-quiz3', 'c', 'q3')">تحقق من الإجابة</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Page 3: Section 1 -->
+                <div id="section1-page" class="page">
+                    <div class="section-header">
+                        <div class="question-icon" onclick="openQuestionModal('لماذا تعتبر مرحلتا التقييم والتوثيق مستمرتين طوال دورة حياة النظام وليستا مرحلتين منفصلتين؟', 'section1')">؟</div>
+                        <h2>مراحل دورة حياة النظام</h2>
+                    </div>
+                    <p>توفر دورة حياة النظام إطار عمل لتنظيم عمليات الإنتاج لأي نظام بشكل ممنهج. الهدف منها ليس فقط تحسين المنتج النهائي، بل أيضًا تحسين إدارة عمليات الإنتاج والتطوير والاستخدام الأمثل للموارد.</p>
+                    
+                    <svg class="illustration" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrowhead-cycle" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+                            </marker>
+                        </defs>
+                        <style>
+                            .label-cycle { font-family: 'Tajawal', sans-serif; font-size: 12px; text-anchor: middle; }
+                            .stage-icon { fill: none; stroke-width: 2; }
+                            .stage-circle { fill: white; stroke-width: 3; }
+                        </style>
+                        <circle cx="200" cy="200" r="140" fill="none" stroke="#bdc3c7" stroke-width="1" stroke-dasharray="5,5"/>
+                        
+                        <!-- Stages -->
+                        <g transform="translate(200, 80)">
+                            <circle class="stage-circle" cx="0" cy="0" r="30" stroke="#2ecc71"/>
+                            <text x="0" y="50" class="label-cycle">التحليل</text>
+                        </g>
+                        <g transform="translate(310, 140)">
+                            <circle class="stage-circle" cx="0" cy="0" r="30" stroke="#f39c12"/>
+                            <text x="0" y="50" class="label-cycle">التصميم</text>
+                        </g>
+                        <g transform="translate(310, 260)">
+                            <circle class="stage-circle" cx="0" cy="0" r="30" stroke="#e74c3c"/>
+                            <text x="0" y="50" class="label-cycle">التطوير</text>
+                        </g>
+                        <g transform="translate(200, 320)">
+                            <circle class="stage-circle" cx="0" cy="0" r="30" stroke="#9b59b6"/>
+                            <text x="0" y="50" class="label-cycle">الاختبار</text>
+                        </g>
+                        <g transform="translate(90, 260)">
+                            <circle class="stage-circle" cx="0" cy="0" r="30" stroke="#3498db"/>
+                            <text x="0" y="50" class="label-cycle">التنفيذ</text>
+                        </g>
+                        <g transform="translate(90, 140)">
+                            <circle class="stage-circle" cx="0" cy="0" r="30" stroke="#1abc9c"/>
+                            <text x="0" y="50" class="label-cycle">الصيانة</text>
+                        </g>
+
+                        <!-- Center Text -->
+                        <text x="200" y="195" class="label-cycle" font-size="14" font-weight="bold">مراحل دورة</text>
+                        <text x="200" y="215" class="label-cycle" font-size="14" font-weight="bold">حياة النظام</text>
+
+                        <!-- Arrows -->
+                        <path d="M 235 95 A 50 50 0 0 1 280 125" stroke="#34495e" fill="none" stroke-width="1.5" marker-end="url(#arrowhead-cycle)"/>
+                        <path d="M 310 175 V 225" stroke="#34495e" fill="none" stroke-width="1.5" marker-end="url(#arrowhead-cycle)"/>
+                        <path d="M 280 275 A 50 50 0 0 1 235 305" stroke="#34495e" fill="none" stroke-width="1.5" marker-end="url(#arrowhead-cycle)"/>
+                        <path d="M 165 305 A 50 50 0 0 1 120 275" stroke="#34495e" fill="none" stroke-width="1.5" marker-end="url(#arrowhead-cycle)"/>
+                        <path d="M 90 225 V 175" stroke="#34495e" fill="none" stroke-width="1.5" marker-end="url(#arrowhead-cycle)"/>
+                        <path d="M 120 125 A 50 50 0 0 1 165 95" stroke="#34495e" fill="none" stroke-width="1.5" marker-end="url(#arrowhead-cycle)"/>
+
+                        <!-- Side Labels -->
+                        <rect x="10" y="180" width="50" height="40" fill="#34495e"/>
+                        <text x="35" y="205" class="label-cycle" fill="white">التقييم</text>
+                        <rect x="340" y="180" width="50" height="40" fill="#34495e"/>
+                        <text x="365" y="205" class="label-cycle" fill="white">التوثيق</text>
+                    </svg>
+
+                    <div class="quiz-container" id="formative-quiz1">
+                        <p class="quiz-question"><strong>تقويم تكويني:</strong> شركة تريد بناء نظام جديد. قام فريق العمل بإجراء مقابلات مع الموظفين لفهم مشاكلهم اليومية. هذه الخطوة تنتمي إلى أي مرحلة من مراحل دورة حياة النظام؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="fq1" value="a"> التصميم</label>
+                            <label><input type="radio" name="fq1" value="b"> التحليل</label>
+                            <label><input type="radio" name="fq1" value="c"> التنفيذ</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('formative-quiz1', 'b', 'fq1')">تحقق</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+                
+                <!-- Page 4: Section 2 -->
+                <div id="section2-page" class="page">
+                    <div class="section-header">
+                         <div class="question-icon" onclick="openQuestionModal('لماذا من المهم تصميم واجهة المستخدم بعناية في مرحلة التصميم حتى لو كانت وظائف النظام تعمل بشكل مثالي؟', 'section2')">؟</div>
+                        <h2>1. التحليل و 2. التصميم</h2>
+                    </div>
+                    <h3>مرحلة التحليل (Analysis)</h3>
+                    <p>الخطوة الأولى لنجاح أي مشروع هي تحديد المشكلة وتحديد متطلبات حلها بدقة. في هذه المرحلة، يتم تحديد المستخدمين، احتياجاتهم، والوظائف المطلوبة للنظام الجديد، مع الأخذ في الاعتبار الموارد المتاحة مثل الوقت والتكلفة.</p>
+                    
+                    <h3>مرحلة التصميم (Design)</h3>
+                    <p>في هذه المرحلة، يقوم محلل النظم بترجمة متطلبات مرحلة التحليل إلى هيكل وتصميم للنظام. يتم فيها تقسيم المشكلة الرئيسية إلى مشكلات أصغر وتحديد التفاصيل التقنية للنظام.</p>
+                    <div class="knowledge-bulletin">
+                        <h4>نشرة معرفية: ما الذي يتم تحديده في مرحلة التصميم؟</h4>
+                        <ul class="checklist">
+                            <li>تدفق البيانات والمعلومات في النظام.</li>
+                            <li>هياكل البيانات وكيفية تخزينها.</li>
+                            <li>تصميم واجهة المستخدم (UI) وتجربة المستخدم (UX).</li>
+                            <li>تصميم المخرجات مثل التقارير.</li>
+                            <li>طريقة تبادل البيانات مع الأنظمة الأخرى.</li>
+                            <li>استراتيجية اختبار النظام.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="quiz-container" id="formative-quiz2">
+                        <p class="quiz-question"><strong>تقويم تكويني:</strong> تحديد أن "حجم الأزرار في التطبيق يجب أن يكون قابلاً للتعديل" هو ناتج أي مرحلة؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="fq2" value="a"> التحليل (لأنه يلبي حاجة المستخدمين الذين يعانون من ارتعاش الأيدي).</label>
+                            <label><input type="radio" name="fq2" value="b"> التنفيذ (لأنه يتم تطبيقه في هذه المرحلة).</label>
+                            <label><input type="radio" name="fq2" value="c"> الصيانة (لأنه يعتبر تحسينًا للنظام).</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('formative-quiz2', 'a', 'fq2')">تحقق</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Page 5: Section 3 -->
+                <div id="section3-page" class="page">
+                    <div class="section-header">
+                         <div class="question-icon" onclick="openQuestionModal('لماذا لا يمكن فصل مرحلة الاختبار عن مرحلة التطوير؟ ما هي مخاطر ترك الاختبار إلى النهاية؟', 'section3')">؟</div>
+                        <h2>3. التطوير والاختبار و 4. التنفيذ</h2>
+                    </div>
+                    <h3>مرحلة التطوير والاختبار (Development and Testing)</h3>
+                    <p>في هذه المرحلة، يقوم المبرمجون بتحويل تصميمات النظام إلى كود برمجي فعلي. لا يمكن فصل الاختبار عن التطوير، حيث يجب اختبار النظام بشكل شامل أثناء وبعد البرمجة لضمان خلوه من الأخطاء وتلبية المتطلبات.</p>
+                    
+                    <h3>مرحلة التنفيذ (Implementation)</h3>
+                    <p>بعد التأكد من جودة النظام وموافقة المستخدم عليه، يتم نشر النظام وتثبيته في بيئة العمل الحقيقية ليكون جاهزًا للاستخدام. قد تتضمن هذه المرحلة تدريب المستخدمين ونقل البيانات من النظام القديم إلى الجديد.</p>
+
+                    <div class="click-track-activity">
+                        <h4>نشاط تفاعلي: أنواع الاختبارات</h4>
+                        <p>انقر على كل نوع لمعرفة ما يركز عليه.</p>
+                        <div class="track-item" onclick="toggleTrackItem(this)">
+                            <strong>اختبار صحة البيانات المدخلة</strong>
+                            <div class="content">التأكد من أن النظام يرفض البيانات غير الصحيحة (مثل إدخال نص في حقل رقمي).</div>
+                        </div>
+                        <div class="track-item" onclick="toggleTrackItem(this)">
+                            <strong>اختبار وظائف النظام وقابلية الاستخدام</strong>
+                            <div class="content">التأكد من أن جميع الأزرار والقوائم تعمل كما هو متوقع، وأن النظام سهل الاستخدام.</div>
+                        </div>
+                         <div class="track-item" onclick="toggleTrackItem(this)">
+                            <strong>اختبار أخطاء التصميم والتشغيل</strong>
+                            <div class="content">البحث عن الأخطاء المنطقية في الكود البرمجي التي قد تؤدي إلى نتائج غير متوقعة.</div>
+                        </div>
+                        <div class="track-item" onclick="toggleTrackItem(this)">
+                            <strong>اختبار الاتصال مع الأنظمة الأخرى</strong>
+                            <div class="content">التأكد من أن النظام يمكنه تبادل البيانات بشكل صحيح مع أي أنظمة أخرى يعتمد عليها.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-container" id="formative-quiz3">
+                        <p class="quiz-question"><strong>تقويم تكويني:</strong> قام فريق باختبار ما إذا كان النظام المصرفي الجديد يعرض رسالة خطأ مناسبة عند محاولة تحويل مبلغ أكبر من الرصيد المتاح. هذا الاختبار يندرج تحت أي نوع؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="fq3" value="a"> اختبار قابلية الاستخدام</label>
+                            <label><input type="radio" name="fq3" value="b"> اختبار صحة البيانات المدخلة وأخطاء التشغيل</label>
+                            <label><input type="radio" name="fq3" value="c"> اختبار الاتصال مع الأنظمة الأخرى</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('formative-quiz3', 'b', 'fq3')">تحقق</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Page 6: Section 4 -->
+                <div id="section4-page" class="page">
+                    <div class="section-header">
+                         <div class="question-icon" onclick="openQuestionModal('لماذا يعتبر التوثيق الجيد مهمًا جدًا حتى لو كان المبرمج الذي كتب الكود لا يزال يعمل في الشركة؟', 'section4')">؟</div>
+                        <h2>5. الصيانة و 6. التوثيق</h2>
+                    </div>
+                    <h3>مرحلة الصيانة (Maintenance)</h3>
+                    <p>هي مرحلة مستمرة تبدأ بعد إطلاق النظام. الهدف منها هو معالجة أي أخطاء تظهر أثناء الاستخدام الفعلي، وإضافة تحسينات أو ميزات جديدة بناءً على ملاحظات المستخدمين والتغيرات المستقبلية.</p>
+
+                    <h3>مرحلة التوثيق (Documentation)</h3>
+                    <p>التوثيق ليس مرحلة أخيرة، بل هو عملية مستمرة تبدأ من مرحلة التحليل وتستمر طوال حياة النظام. يتم فيها تسجيل ووصف جميع تفاصيل التصميم، التطوير، الاختبار، والتنفيذ. يعمل التوثيق كمرجع أساسي لأي شخص يحتاج إلى فهم أو تعديل النظام في المستقبل.</p>
+
+                    <div class="knowledge-bulletin">
+                        <h4>نشرة معرفية: أمثلة على التوثيق</h4>
+                        <ul>
+                            <li><strong>في التحليل:</strong> مسح لمتطلبات المستخدمين.</li>
+                            <li><strong>في التصميم:</strong> وثيقة توضح تصميم وهيكلية النظام.</li>
+                            <li><strong>في التطوير:</strong> إضافة تعليقات توضيحية داخل الكود البرمجي.</li>
+                            <li><strong>في الاختبار:</strong> توثيق حالات الاختبار والنتائج.</li>
+                            <li><strong>للمستخدم:</strong> إعداد دليل المستخدم.</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-container" id="formative-quiz4">
+                        <p class="quiz-question"><strong>تقويم تكويني:</strong> بعد إطلاق تطبيق سياحي، طلب المستخدمون إضافة ميزة "الطقس". في أي مرحلة من دورة حياة النظام يتم إضافة هذه الميزة الجديدة؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="fq4" value="a"> مرحلة الصيانة</label>
+                            <label><input type="radio" name="fq4" value="b"> مرحلة التحليل</label>
+                            <label><input type="radio" name="fq4" value="c"> مرحلة التنفيذ</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('formative-quiz4', 'a', 'fq4')">تحقق</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Page 7: Section 5 -->
+                <div id="section5-page" class="page">
+                    <div class="section-header">
+                         <div class="question-icon" onclick="openQuestionModal('أي طريقة لجمع المتطلبات تكون الأفضل إذا كنت تريد الحصول على بيانات كمية من عدد كبير جدًا من الأشخاص؟ ولماذا؟', 'section5')">؟</div>
+                        <h2>جمع المتطلبات</h2>
+                    </div>
+                    <p>في مرحلة التحليل، يتم البحث في تفاصيل النظام المطلوب من خلال جمع المتطلبات من أصحاب المصلحة. تنقسم المتطلبات إلى قسمين رئيسيين:</p>
+                    <ul>
+                        <li><strong>المتطلبات الوظيفية (Functional):</strong> تحدد ما يجب على النظام القيام به (مثل: "يجب أن يتمكن المستخدم من البحث عن معلم سياحي").</li>
+                        <li><strong>المتطلبات غير الوظيفية (Non-Functional):</strong> تصف خصائص جودة النظام (مثل: "يجب أن تكون استجابة البحث سريعة").</li>
+                    </ul>
+                    
+                    <h3>طرق جمع المتطلبات</h3>
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>طرق جمع البيانات</th>
+                                <th>الوقت المستغرق</th>
+                                <th>التكلفة والجهد</th>
+                                <th>دقة وواقعية البيانات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>الاستبانات</td>
+                                <td>تستغرق وقتا أقل من بقية الطرق عادة.</td>
+                                <td>تتطلب تكلفة وجهد محدودين.</td>
+                                <td>تعتمد بشكل كبير على وضوح الأسئلة وجدية المستجيب.</td>
+                            </tr>
+                            <tr>
+                                <td>المقابلات</td>
+                                <td>تستغرق وقتا يزيد مع زيادة الفئة المستهدفة.</td>
+                                <td>مكلفة وتحتاج إلى مجهود يزيد مع زيادة عدد الأشخاص.</td>
+                                <td>تتسم بالدقة وتعتمد على مهنية الأشخاص ومحلل النظم.</td>
+                            </tr>
+                            <tr>
+                                <td>الملاحظة</td>
+                                <td>تستغرق وقتا أكبر من الاستبانات وأقل من المقابلات.</td>
+                                <td>تكلفتها محدودة ولكنها تحتاج إلى جهد أكبر من المحلل.</td>
+                                <td>تكشف عن تفاصيل دقيقة ولكنها تعتمد على مصداقية الأشخاص.</td>
+                            </tr>
+                            <tr>
+                                <td>فحص توثيقات النظام</td>
+                                <td>توفر الوقت بناءً على توفر المستندات وجودتها.</td>
+                                <td>تكلفتها محدودة ولكنها تحتاج إلى جهد كبير من المحلل.</td>
+                                <td>الأكثر واقعية ولكنها تعتمد على دقة ومصداقية الوثائق.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="quiz-container" id="formative-quiz5">
+                        <p class="quiz-question"><strong>تقويم تكويني:</strong> متطلب "يجب أن يكون النظام سهل الاستخدام" يعتبر من أي نوع من المتطلبات؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="fq5" value="a"> وظيفي</label>
+                            <label><input type="radio" name="fq5" value="b"> غير وظيفي</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('formative-quiz5', 'b', 'fq5')">تحقق</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Page 8: In-class Activity -->
+                <div id="in-class-activity-page" class="page">
+                    <h2>نشاط صفي: فكّر - زاوج - شارك</h2>
+                    <p><strong>الهدف:</strong> تطبيق مفهوم المتطلبات الوظيفية وغير الوظيفية على "تطبيق مرشدك السياحي".</p>
+                    <div class="classroom-activity">
+                        <ol>
+                            <li class="step">
+                                <strong>الخطوة الأولى: فكّر (فردي - دقيقتان)</strong>
+                                <p>كل طالب يقوم بكتابة متطلب وظيفي واحد ومتطلب غير وظيفي واحد للتطبيق السياحي المذكور في القصة التمهيدية.</p>
+                            </li>
+                            <li class="step">
+                                <strong>الخطوة الثانية: زاوج (ثنائي - 3 دقائق)</strong>
+                                <p>كل طالبين يناقشان المتطلبات التي كتباها، ويختاران أفضل متطلب وظيفي وأفضل متطلب غير وظيفي من قائمتهما المشتركة.</p>
+                            </li>
+                            <li class="step">
+                                <strong>الخطوة الثالثة: شارك (جماعي - 5 دقائق)</strong>
+                                <p>يقوم المعلم باختيار بعض المجموعات الثنائية بشكل عشوائي لمشاركة أفضل المتطلبات التي توصلوا إليها مع بقية الفصل.</p>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Page 9: Game -->
+                <div id="game-page" class="page">
+                    <h2>لعبة توصيل المفاهيم</h2>
+                    <p>انقر على المفهوم في العمود الأيمن، ثم انقر على التعريف المناسب له في العمود الأيسر.</p>
+                    <div class="matching-game">
+                        <div class="game-column" id="definitions">
+                            <div class="game-item" data-match="1">تحديد ما يريده المستخدمون من النظام.</div>
+                            <div class="game-item" data-match="2">رسم هيكل النظام وواجهاته.</div>
+                            <div class="game-item" data-match="3">كتابة الكود البرمجي.</div>
+                            <div class="game-item" data-match="4">إصلاح الأخطاء بعد إطلاق النظام.</div>
+                        </div>
+                        <div class="game-column" id="concepts">
+                            <div class="game-item" data-match="3">التطوير</div>
+                            <div class="game-item" data-match="1">التحليل</div>
+                            <div class="game-item" data-match="4">الصيانة</div>
+                            <div class="game-item" data-match="2">التصميم</div>
+                        </div>
+                    </div>
+                    <div id="game-feedback"></div>
+                </div>
+                
+                <!-- Page 10: Formative Assessment -->
+                <div id="formative-assessment-page" class="page">
+                    <h2>تقويم تكويني ختامي: تذكرة الخروج</h2>
+                     <p>بناءً على ما تعلمته في هذا الدرس، أجب عن السؤال التالي كـ "تذكرة خروج" من الحصة لتأكيد فهمك للمفاهيم الأساسية.</p>
+                     <div class="quiz-container">
+                        <p class="quiz-question">تخيل أنك تعمل في شركة، وطُلب منك إضافة ميزة جديدة إلى نظام قائم. اذكر بالترتيب، ثلاث مراحل رئيسية من دورة حياة النظام ستمر بها هذه الميزة الجديدة، مع شرح مختصر لمهمة واحدة ستقوم بها في كل مرحلة.</p>
+                        <textarea rows="6" style="width: 100%; padding: 10px; font-family: 'Tajawal', sans-serif; font-size: 1em;" placeholder="مثال: 1. مرحلة ...: سأقوم بـ... 2. مرحلة ...: سأقوم بـ..."></textarea>
+                        <button class="btn" style="margin-top: 10px;" onclick="showNotification('شكراً لك، تم استلام إجابتك بنجاح!', 'success')">تسليم الإجابة</button>
+                    </div>
+                </div>
+
+
+                <!-- Page 11: Report -->
+                <div id="report-page" class="page">
+                    <h2>تقرير الحصة الاحترافي</h2>
+                    <p>هذا ملخص تفاعلي وشامل للحصة الحالية. يمكنك تصديره للاحتفاظ به ومشاركته.</p>
+                    <div id="report-content">
+                        <h3>تفاصيل الحصة</h3>
+                        <table id="session-details-table">
+                            <!-- Report content will be generated by JS -->
+                        </table>
+                        
+                        <h3>متابعة الطلاب</h3>
+                        <table id="followup-report-table">
+                             <!-- Report content will be generated by JS -->
+                        </table>
+
+                        <h3>مشاركة الطلاب (الميداليات والأسئلة)</h3>
+                        <table id="medals-report-table">
+                            <!-- Report content will be generated by JS -->
+                        </table>
+                        
+                        <h3>تنظيم النشاط اللاصفي</h3>
+                         <table id="activity-plan-table">
+                            <!-- Report content will be generated by JS -->
+                        </table>
+                    </div>
+                    <button class="btn" onclick="exportReport()">تصدير التقرير كملف HTML</button>
+                </div>
+            </main>
+        </div>
+        
+        <footer>
+            فكرة وتصميم: محمد مجممي
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="question-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('question-modal')">&times;</span>
+            <h3 id="modal-question-text"></h3>
+            <label for="modal-student-select">اختر الطالب:</label>
+            <select id="modal-student-select"></select>
+            <p>امنح الطالب ميدالية:</p>
+            <div>
+                <button class="btn" style="background-color: var(--gold-medal);" onclick="awardMedal('gold')">🥇 ذهبية</button>
+                <button class="btn" style="background-color: var(--silver-medal);" onclick="awardMedal('silver')">🥈 فضية</button>
+                <button class="btn" style="background-color: var(--bronze-medal);" onclick="awardMedal('bronze')">🥉 برونزية</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="followup-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('followup-modal')">&times;</span>
+            <div class="modal-header">
+                <h3>كشف متابعة الحصة</h3>
+                <p><strong>الدرس:</strong> <span id="followup-lesson-title"></span></p>
+                <p><strong>الصف:</strong> <span id="followup-class-name"></span> | <strong>التاريخ:</strong> <span id="followup-date"></span></p>
+            </div>
+            <div class="modal-body">
+                <table id="followup-table">
+                    <thead>
+                        <tr>
+                            <th>اسم الطالب</th>
+                            <th>الحضور</th>
+                            <th>المشاركة</th>
+                            <th>السلوك (ملاحظات)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="followup-table-body">
+                        <!-- Student rows will be generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <p><strong>مدير المدرسة:</strong> فهد القحطاني</p>
+                <button class="btn" id="export-followup-btn">تصدير كشف المتابعة</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+
+
+    <script>
+        // --- STUDENT DATA FROM DOCX FILES ---
+        const studentData = {
+            '301': [
+                "فهد عليان عبدالله المتعاني", "حمد عزيز محمد المالكي", "محمد احمد محمد جعفري", "عماد سعود محيسن المتعاني",
+                "عمر تركي علوش المالكي", "عامر ياسر احمد هوساوي", "مجاهد سامي مجاهد الحربي", "معاذ عيضه عثمان النمري",
+                "رياض محمد عوض الطلحي", "عادل عبدالله بن عثمان القرشي", "زياد ماجد محمد الفعر", "أسامة عبدالله ابن فرحان الجعيد",
+                "عادل سليم مسلم القرشي", "وسام سعيد بن خضران المالكي", "فيصل عبدالله عبدالرحمن القرشي", "سامي سليم بن هليل الحريثي",
+                "طلال محمد عويض المتعاني", "عبدالمجيد صالح بن عوض الغامدي", "محمد طاهر محمد الشهراني", "سعود محمد خضر القريقاوي",
+                "محمد عطاف بن دخيل الله العوفي", "يزيد احمد بطي الزايدي", "عمر محمد عبدالله الجهني", "اياد احمد بن محمد هادي",
+                "هشام عادل قليل الخديدي", "رياض محمد علي الثبيتي", "مهند خالد محمد الثبيتي", "خالد فهد خالد الشاعر",
+                "سلطان جزل ابن سلطان العتيبي", "عبدالمجيد ماجد نايف الراجحي", "محمد غازي جابر النمري"
+            ],
+            '302': [
+                "عمر صالح مهدي الزهراني", "محمد عبدالعزيز احمد هزازي", "وافي سعد بن عبدالله البقمي", "بدر عواض عايض الجعيد",
+                "نواف غازي صالح الخديدي", "عبدالمجيد محمد ضويان العصيمي", "مهند بندر بن فايت الحارثي", "مهند مشاري ابن خالد الحارثي",
+                "خالد فيصل سعد الزهراني", "عبدالرحمن خالد احمد النفيعي", "عبدالعزيز عبدالرحمن دغش القحطاني", "مشاري عبدالرحمن بن محمد الثبيتي",
+                "الحسين سليمان بن سعد الغالبي", "عبدالاله بن عبدالله بن محمد البدراني", "سطام سيف بن مسعود الحارثي", "محمد حاسن هليل الحريثي",
+                "هاشم هشام عطاء الله العصيمي", "عزام فائز بن مسلم العيلي", "سعيد محمد سعيد الزهراني", "تركي مستور سفر السفياني",
+                "تميم سطام احمد الغامدي", "احمد سلمان مسلم القرشي", "عبدالعزيز محمد عطيه القرشي", "ناصر فيصل جمعان الزهراني",
+                "عبدالرحمن هاني عبدالله القرشي", "عبدالعزيز ناصر عبدالجبار الطلحي", "مهند رائد خلف الله الطويرقي", "جسار عطيه سعد الزهراني",
+                "مهند باسم بن سعد الحربي", "سطام محمد عبدالله الهذلي", "أنس مالك عمر القرشي"
+            ]
+        };
+
+
+        // --- STATE MANAGEMENT ---
+        const appState = {
+            currentPage: 'intro',
+            currentClass: '301', // Default to first class with names
+            students: {},
+            medals: [],
+            followup: {},
+            timer: {
+                interval: null,
+                seconds: 0,
+                isRunning: false
+            },
+            game: {
+                selectedConcept: null,
+                selectedDefinition: null,
+                correctPairs: 0
+            },
+            currentQuestion: {
+                section: null,
+                question: null
+            }
+        };
+
+        // --- DOM ELEMENTS ---
+        const navLinks = document.querySelectorAll('#nav-menu li');
+        const pages = document.querySelectorAll('.page');
+        const classSelect = document.getElementById('class-select');
+        const studentList = document.getElementById('student-list');
+        
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => navigateTo(link.dataset.page));
+            });
+            
+            // Initialize class management
+            classSelect.addEventListener('change', (e) => {
+                appState.currentClass = e.target.value;
+                initializeStudentsForClass(appState.currentClass);
+            });
+            initializeStudentsForClass(appState.currentClass);
+            
+            // Initialize timer controls
+            document.getElementById('start-timer').addEventListener('click', startTimer);
+            document.getElementById('pause-timer').addEventListener('click', pauseTimer);
+            document.getElementById('reset-timer').addEventListener('click', resetTimer);
+
+            // Initialize followup modal button
+            document.getElementById('open-followup-btn').addEventListener('click', openFollowupModal);
+            document.getElementById('export-followup-btn').addEventListener('click', exportFollowupReport);
+
+            // Initialize add student button
+            document.getElementById('add-student-btn').addEventListener('click', addStudent);
+
+            // Initialize management box toggle
+            document.getElementById('management-box-header').addEventListener('click', () => {
+                document.getElementById('management-box').classList.toggle('collapsed');
+            });
+            
+            // Initialize game
+            initializeGame();
+        });
+
+        // --- NAVIGATION ---
+        function navigateTo(pageId) {
+            appState.currentPage = pageId;
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === `${pageId}-page`);
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.dataset.page === pageId);
+            });
+            
+            if (pageId === 'report') {
+                generateReport();
+            }
+        }
+
+        // --- CLASS & STUDENT MANAGEMENT ---
+        function initializeStudentsForClass(classId) {
+            if (!appState.students[classId]) {
+                 // Check if we have pre-loaded data for this class
+                const names = studentData[classId] || [];
+                if (names.length > 0) {
+                     appState.students[classId] = names.map((name, index) => ({ id: Date.now() + index, name: name }));
+                } else {
+                    // Fallback for classes without pre-loaded names
+                    appState.students[classId] = [
+                        { id: Date.now() + 1, name: 'طالب 1' },
+                        { id: Date.now() + 2, name: 'طالب 2' },
+                        { id: Date.now() + 3, name: 'طالب 3' }
+                    ];
+                }
+            }
+
+            if (!appState.followup[classId]) {
+                appState.followup[classId] = {};
+                appState.students[classId].forEach(s => {
+                    appState.followup[classId][s.id] = {
+                        attendance: 'unchecked',
+                        participation: 0,
+                        behavior: ''
+                    };
+                });
+            }
+            renderStudentList();
+        }
+
+        function renderStudentList() {
+            studentList.innerHTML = '';
+            const currentStudents = appState.students[appState.currentClass] || [];
+            currentStudents.forEach(student => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <input type="text" value="${student.name}" onchange="updateStudentName(${student.id}, this.value)">
+                    <button class="btn-danger" onclick="deleteStudent(${student.id})">حذف</button>
+                `;
+                studentList.appendChild(li);
+            });
+        }
+
+        function updateStudentName(studentId, newName) {
+            const student = appState.students[appState.currentClass].find(s => s.id === studentId);
+            if (student) {
+                student.name = newName;
+            }
+        }
+        
+        function addStudent() {
+            const nameInput = document.getElementById('new-student-name');
+            const newName = nameInput.value.trim();
+            if (newName === '') {
+                showNotification('الرجاء إدخال اسم الطالب.', 'warning');
+                return;
+            }
+
+            const newId = Date.now(); // Using timestamp for a unique ID
+            const newStudent = { id: newId, name: newName };
+
+            const currentClass = appState.currentClass;
+            appState.students[currentClass].push(newStudent);
+            
+            // Initialize followup data for the new student
+            appState.followup[currentClass][newId] = {
+                attendance: 'unchecked',
+                participation: 0,
+                behavior: ''
+            };
+
+            nameInput.value = '';
+            renderStudentList();
+            showNotification('تمت إضافة الطالب بنجاح.');
+        }
+
+        function deleteStudent(studentId) {
+            const currentClass = appState.currentClass;
+            appState.students[currentClass] = appState.students[currentClass].filter(s => s.id !== studentId);
+            delete appState.followup[currentClass][studentId];
+            renderStudentList();
+        }
+
+        // --- TIMER ---
+        function startTimer() {
+            if (appState.timer.isRunning) return;
+            appState.timer.isRunning = true;
+            appState.timer.interval = setInterval(() => {
+                appState.timer.seconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            appState.timer.isRunning = false;
+            clearInterval(appState.timer.interval);
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            appState.timer.seconds = 0;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(appState.timer.seconds / 60);
+            const seconds = appState.timer.seconds % 60;
+            document.getElementById('timer-display').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // --- NOTIFICATIONS ---
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            if (!notification) return;
+
+            notification.textContent = message;
+            notification.style.backgroundColor = type === 'success' ? 'var(--success-color)' : 'var(--warning-color)';
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // --- MODALS ---
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function openQuestionModal(question, section) {
+            if (!question || !section) return;
+            
+            appState.currentQuestion.section = section;
+            appState.currentQuestion.question = question;
+            
+            document.getElementById('modal-question-text').textContent = question;
+            const studentSelect = document.getElementById('modal-student-select');
+            studentSelect.innerHTML = '';
+            appState.students[appState.currentClass].forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = student.name;
+                studentSelect.appendChild(option);
+            });
+            openModal('question-modal');
+        }
+
+        function awardMedal(type) {
+            const studentId = document.getElementById('modal-student-select').value;
+            const student = appState.students[appState.currentClass].find(s => s.id == studentId);
+            if (student) {
+                appState.medals.push({
+                    studentId: student.id,
+                    studentName: student.name,
+                    classId: appState.currentClass,
+                    section: appState.currentQuestion.section,
+                    question: appState.currentQuestion.question,
+                    medal: type
+                });
+                const medalType = type === 'gold' ? 'ذهبية' : type === 'silver' ? 'فضية' : 'برونزية';
+                showNotification(`تم منح ${student.name} ميدالية ${medalType}.`);
+            }
+            closeModal('question-modal');
+        }
+
+        // --- FOLLOW-UP MODAL (IMPROVED) ---
+        function openFollowupModal() {
+            document.getElementById('followup-lesson-title').textContent = document.getElementById('lesson-title').textContent;
+            document.getElementById('followup-class-name').textContent = appState.currentClass;
+            document.getElementById('followup-date').textContent = new Date().toLocaleDateString('ar-SA');
+            
+            const tableBody = document.getElementById('followup-table-body');
+            tableBody.innerHTML = '';
+            const currentStudents = appState.students[appState.currentClass];
+            const currentFollowup = appState.followup[appState.currentClass];
+
+            currentStudents.forEach(student => {
+                const studentFollowup = currentFollowup[student.id];
+                const row = document.createElement('tr');
+                
+                let attendanceContent = '';
+                let attendanceClassName = 'status-cell';
+                if (studentFollowup.attendance === 'checked') {
+                    attendanceContent = '✓';
+                    attendanceClassName += ' checked';
+                } else if (studentFollowup.attendance === 'crossed') {
+                    attendanceContent = '✗';
+                    attendanceClassName += ' crossed';
+                }
+
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td class="${attendanceClassName}" data-student-id="${student.id}" data-category="attendance">${attendanceContent}</td>
+                    <td class="participation-cell" data-student-id="${student.id}" data-category="participation">${studentFollowup.participation}</td>
+                    <td class="behavior-cell"><input type="text" value="${studentFollowup.behavior || ''}" data-student-id="${student.id}" data-category="behavior"></td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            tableBody.querySelectorAll('.status-cell, .participation-cell, .behavior-cell input').forEach(cell => {
+                if (cell.tagName === 'INPUT') {
+                    cell.addEventListener('change', handleFollowupChange);
+                } else {
+                    cell.addEventListener('click', handleFollowupChange);
+                }
+            });
+
+            openModal('followup-modal');
+        }
+        
+        function handleFollowupChange(event) {
+            const element = event.target;
+            const studentId = element.dataset.studentId;
+            const category = element.dataset.category;
+            const classId = appState.currentClass;
+            
+            if (category === 'attendance') {
+                const currentState = appState.followup[classId][studentId].attendance;
+                let newState;
+                if (currentState === 'unchecked') newState = 'checked';
+                else if (currentState === 'checked') newState = 'crossed';
+                else newState = 'unchecked';
+                appState.followup[classId][studentId].attendance = newState;
+                
+                element.classList.remove('checked', 'crossed');
+                if (newState === 'checked') {
+                    element.textContent = '✓';
+                    element.classList.add('checked');
+                } else if (newState === 'crossed') {
+                    element.textContent = '✗';
+                    element.classList.add('crossed');
+                } else {
+                    element.textContent = '';
+                }
+            } else if (category === 'participation') {
+                appState.followup[classId][studentId].participation++;
+                element.textContent = appState.followup[classId][studentId].participation;
+            } else if (category === 'behavior') {
+                appState.followup[classId][studentId].behavior = element.value;
+            }
+        }
+
+        function exportFollowupReport() {
+            const classId = appState.currentClass;
+            const students = appState.students[classId];
+            const followupData = appState.followup[classId];
+            const lessonTitle = document.getElementById('lesson-title').textContent;
+            
+            let tableRows = '';
+            students.forEach(student => {
+                const data = followupData[student.id];
+                const attendanceSymbol = (status) => {
+                    if (status === 'checked') return 'حاضر';
+                    if (status === 'crossed') return 'غائب';
+                    return '-';
+                };
+                tableRows += `
+                    <tr>
+                        <td>${student.name}</td>
+                        <td style="text-align:center;">${attendanceSymbol(data.attendance)}</td>
+                        <td style="text-align:center;">${data.participation}</td>
+                        <td>${data.behavior}</td>
+                    </tr>
+                `;
+            });
+
+            const reportHtml = `
+                <html>
+                <head>
+                    <title>كشف متابعة: ${lessonTitle}</title>
+                    <meta charset="UTF-8">
+                    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Tajawal', sans-serif; direction: rtl; padding: 20px; }
+                        .report-container { border: 2px solid #333; padding: 20px; border-radius: 10px; max-width: 800px; margin: auto; }
+                        .header, .footer { text-align: center; margin-bottom: 20px; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+                        th { background-color: #f2f2f2; }
+                        .footer p { margin: 5px 0; }
+                    </style>
+                </head>
+                <body>
+                    <div class="report-container">
+                        <div class="header">
+                            <h2>كشف متابعة الحصة</h2>
+                            <h3>${lessonTitle}</h3>
+                            <p><strong>الصف:</strong> ${classId} | <strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-SA')}</p>
+                            <p><strong>المعلم:</strong> محمد مجممي</p>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>اسم الطالب</th>
+                                    <th style="text-align:center;">الحضور</th>
+                                    <th style="text-align:center;">المشاركة (عدد)</th>
+                                    <th>السلوك (ملاحظات)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tableRows}
+                            </tbody>
+                        </table>
+                        <div class="footer">
+                            <p><strong>مدير المدرسة</strong></p>
+                            <p>فهد القحطاني</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([reportHtml], { type: 'text/html;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `كشف_متابعة_${lessonTitle}_فصل_${classId}.html`;
+            link.click();
+        }
+
+        // --- QUIZZES & ACTIVITIES ---
+        function checkAnswer(quizId, correctAnswer, radioName) {
+            const quizContainer = document.getElementById(quizId);
+            const selectedOption = quizContainer.querySelector(`input[name="${radioName}"]:checked`);
+            const feedbackEl = quizContainer.querySelector('.quiz-feedback');
+
+            if (!selectedOption) {
+                feedbackEl.textContent = 'الرجاء اختيار إجابة.';
+                feedbackEl.className = 'quiz-feedback incorrect';
+                feedbackEl.style.display = 'block';
+                return;
+            }
+
+            if (selectedOption.value === correctAnswer) {
+                feedbackEl.textContent = 'إجابة صحيحة! أحسنت.';
+                feedbackEl.className = 'quiz-feedback correct';
+            } else {
+                feedbackEl.textContent = 'إجابة خاطئة. حاول مرة أخرى.';
+                feedbackEl.className = 'quiz-feedback incorrect';
+            }
+            feedbackEl.style.display = 'block';
+        }
+
+        function toggleTrackItem(element) {
+            document.querySelectorAll('.track-item.active').forEach(item => {
+                if (item !== element) {
+                    item.classList.remove('active');
+                }
+            });
+            element.classList.toggle('active');
+        }
+
+        // --- GAME ---
+        function initializeGame() {
+            const concepts = document.querySelectorAll('#concepts .game-item');
+            const definitions = document.querySelectorAll('#definitions .game-item');
+
+            concepts.forEach(c => c.addEventListener('click', () => selectGameItem(c, 'concept')));
+            definitions.forEach(d => d.addEventListener('click', () => selectGameItem(d, 'definition')));
+        }
+
+        function selectGameItem(item, type) {
+            if (item.classList.contains('correct')) return;
+
+            const columnId = type === 'concept' ? 'concepts' : 'definitions';
+            document.querySelectorAll(`#${columnId} .game-item`).forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+
+            if (type === 'concept') {
+                appState.game.selectedConcept = item;
+            } else {
+                appState.game.selectedDefinition = item;
+            }
+
+            checkForMatch();
+        }
+        
+        function checkForMatch() {
+            const { selectedConcept, selectedDefinition } = appState.game;
+            const feedback = document.getElementById('game-feedback');
+            
+            if (selectedConcept && selectedDefinition) {
+                if (selectedConcept.dataset.match === selectedDefinition.dataset.match) {
+                    selectedConcept.classList.add('correct');
+                    selectedDefinition.classList.add('correct');
+                    selectedConcept.classList.remove('selected');
+                    selectedDefinition.classList.remove('selected');
+                    feedback.textContent = 'توصيل صحيح!';
+                    feedback.style.color = 'var(--success-color)';
+                    appState.game.correctPairs++;
+                } else {
+                    feedback.textContent = 'حاول مرة أخرى!';
+                    feedback.style.color = 'var(--accent-color)';
+                }
+                
+                appState.game.selectedConcept = null;
+                appState.game.selectedDefinition = null;
+                setTimeout(() => {
+                    document.querySelectorAll('.game-item').forEach(i => i.classList.remove('selected'));
+                    if (feedback.textContent !== 'توصيل صحيح!') feedback.textContent = '';
+                }, 1000);
+
+                if (appState.game.correctPairs === 4) {
+                     feedback.textContent = 'ممتاز! لقد أكملت اللعبة بنجاح.';
+                }
+            }
+        }
+
+        // --- REPORTING ---
+        function generateReport() {
+            // Session Details
+            document.getElementById('session-details-table').innerHTML = `
+                <tr><th>البند</th><th>التفاصيل</th></tr>
+                <tr><td>تاريخ اليوم</td><td>${new Date().toLocaleDateString('ar-SA')}</td></tr>
+                <tr><td>الفصل</td><td>${appState.currentClass}</td></tr>
+                <tr><td>الاستراتيجية المستخدمة</td><td>${document.getElementById('strategy-select').value}</td></tr>
+            `;
+
+            // Follow-up Report
+            const followupTable = document.getElementById('followup-report-table');
+            let followupHtml = '<thead><tr><th>الطالب</th><th style="text-align:center;">الحضور</th><th style="text-align:center;">المشاركات</th><th>ملاحظات السلوك</th></tr></thead><tbody>';
+            const currentStudents = appState.students[appState.currentClass] || [];
+            const currentFollowup = appState.followup[appState.currentClass] || {};
+            const attendanceSymbol = (status) => {
+                if (status === 'checked') return '✓';
+                if (status === 'crossed') return '✗';
+                return '-';
+            };
+            currentStudents.forEach(student => {
+                 const data = currentFollowup[student.id] || { attendance: 'unchecked', participation: 0, behavior: '' };
+                 followupHtml += `<tr>
+                    <td>${student.name}</td>
+                    <td style="text-align:center; color:${data.attendance === 'checked' ? 'var(--success-color)' : data.attendance === 'crossed' ? 'var(--accent-color)' : ''}">${attendanceSymbol(data.attendance)}</td>
+                    <td style="text-align:center;">${data.participation}</td>
+                    <td>${data.behavior}</td>
+                 </tr>`;
+            });
+            followupTable.innerHTML = followupHtml + '</tbody>';
+
+            // Medals
+            const medalsTable = document.getElementById('medals-report-table');
+            let medalsHtml = '<thead><tr><th>الطالب</th><th>الميدالية</th><th>السؤال/المناسبة</th></tr></thead><tbody>';
+            const classMedals = appState.medals.filter(m => m.classId === appState.currentClass);
+            if(classMedals.length > 0) {
+                classMedals.forEach(medal => {
+                    const medalIcon = medal.medal === 'gold' ? '🥇' : medal.medal === 'silver' ? '🥈' : '🥉';
+                    medalsHtml += `<tr><td>${medal.studentName}</td><td style="text-align:center;">${medalIcon}</td><td>${medal.question}</td></tr>`;
+                });
+            } else {
+                 medalsHtml += `<tr><td colspan="3">لم يتم منح أي ميداليات خلال هذه الحصة.</td></tr>`;
+            }
+            medalsTable.innerHTML = medalsHtml + '</tbody>';
+
+            // Extracurricular Activity Plan
+            document.getElementById('activity-plan-table').innerHTML = `
+                <thead><tr><th>النشاط</th><th>طريقة التنظيم</th><th>الهدف</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>مشروع تصميم واجهة بديلة</td>
+                        <td>سيتم تقسيم الطلاب إلى مجموعات ثلاثية بناءً على القرعة لمناقشة تصميم واجهة مستخدم بديلة للتطبيق السياحي.</td>
+                        <td>تطبيق مفاهيم التصميم، تعزيز العمل الجماعي، تنمية مهارات العصف الذهني.</td>
+                    </tr>
+                </tbody>
+            `;
+        }
+        
+        function exportReport() {
+            generateReport(); // Ensure report is up-to-date before exporting
+            const reportContent = document.getElementById('report-content').innerHTML;
+            const reportWindow = window.open('', '', 'width=800,height=600');
+            reportWindow.document.write(`
+                <html>
+                <head>
+                    <title>تقرير الحصة: ${document.getElementById('lesson-title').textContent}</title>
+                    <meta charset="UTF-8">
+                    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Tajawal', sans-serif; direction: rtl; padding: 20px; color: #34495e; }
+                        h1, h3 { color: #2c3e50; }
+                        h3 { border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-top: 30px;}
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 0.9em; }
+                        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+                        th { background-color: #2c3e50; color: white; }
+                        tbody tr:nth-of-type(even) { background-color: #f9f9f9; }
+                    </style>
+                </head>
+                <body>
+                    <h1>تقرير الحصة: ${document.getElementById('lesson-title').textContent}</h1>
+                    ${reportContent}
+                </body>
+                </html>
+            `);
+            reportWindow.document.close();
+            reportWindow.print();
+        }
+
+    </script>
+</body>
+</html>
