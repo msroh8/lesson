@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تمرين تفاعلي: دورة حياة النظام</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f9fafb;
+        }
+        .theme-header {
+            background-color: #107569; /* Dark Teal */
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            border: 1px solid #a0d5cf; /* Light Teal Border */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease-in-out;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-primary { background-color: #10b981; color: white; }
+        .btn-primary:hover:not(:disabled) { background-color: #059669; }
+        .btn-secondary { background-color: #6b7280; color: white; }
+        .btn-secondary:hover:not(:disabled) { background-color: #4b5563; }
+        .btn-outline { background-color: transparent; color: #107569; border: 2px solid #107569; }
+        .btn-outline:hover:not(:disabled) { background-color: #107569; color: white; }
+        .btn-export { background-color: #f59e0b; color: white; }
+        .btn-export:hover:not(:disabled) { background-color: #d97706; }
+        .btn-correct { background-color: #22c55e; color: white; }
+        .btn-incorrect { background-color: #ef4444; color: white; }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position-x: 5%;
+            background-position-y: 50%;
+        }
+        .footer-wave {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            transform: rotate(180deg);
+        }
+        .footer-wave svg { position: relative; display: block; width: calc(100% + 1.3px); height: 80px; }
+        .footer-wave .shape-fill { fill: #107569; }
+        .answer-check { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 0.25rem; font-weight: bold; color: white; }
+        .answer-highlight { border: 2px solid #10b981 !important; background-color: #f0fdf4 !important; }
+        
+        /* Interactive Matching Styles */
+        .match-item { cursor: pointer; transition: background-color 0.2s; }
+        .match-item.selected { background-color: #a7f3d0 !important; border-color: #10b981; }
+        .match-item.matched { background-color: #d1d5db; cursor: not-allowed; opacity: 0.7; }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <header class="theme-header shadow-md">
+        <h1 class="text-2xl sm:text-3xl font-bold">دورة حياة النظام</h1>
+        <p class="text-md text-gray-200">لنطبق معًا</p>
+    </header>
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="card p-6 mb-8">
+            <div class="flex flex-wrap justify-between items-center border-b-2 pb-2 border-teal-200 mb-4">
+                 <h2 class="text-2xl font-bold text-teal-800">اختيار الطالب</h2>
+                 <button id="export-report-btn" class="btn btn-export">تصدير التقرير</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <div>
+                    <label for="class-select" class="block mb-2 font-semibold text-gray-700">اختر الفصل:</label>
+                    <select id="class-select" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
+                </div>
+                <div>
+                    <label for="student-select" class="block mb-2 font-semibold text-gray-700">اختر الطالب:</label>
+                    <select id="student-select" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
+                </div>
+                <div class="mt-4 md:mt-0">
+                     <button id="random-student-btn" class="btn btn-outline w-full mt-7">اختر طالب عشوائي</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 min-h-[400px]">
+            <div id="respondent-section" class="text-center mb-6 p-4 bg-teal-50 rounded-lg border border-teal-200" style="display: none;">
+                <p class="text-lg">المستجيب: <span id="respondent-name" class="font-bold text-teal-700"></span></p>
+            </div>
+            <div id="question-container">
+                <h3 id="question-title" class="text-xl font-bold mb-4 text-teal-900"></h3>
+                <div id="question" class="text-lg leading-relaxed p-4 bg-gray-50 rounded-md min-h-[100px]"></div>
+            </div>
+            <div id="answer-container" class="mt-6" style="display: none;">
+                <h3 class="text-xl font-bold mb-4 text-green-700">الإجابة الصحيحة:</h3>
+                <div id="answer" class="text-lg leading-relaxed p-4 bg-green-50 text-green-800 rounded-md border border-green-200"></div>
+                <div id="evaluation-section" class="mt-4 flex gap-4">
+                    <button id="correct-btn" class="btn btn-correct flex-1">أجاب</button>
+                    <button id="incorrect-btn" class="btn btn-incorrect flex-1">لم يجب</button>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                <button id="show-answer-btn" class="btn btn-primary flex-1">اظهر الإجابة</button>
+                <button id="next-question-btn" class="btn btn-secondary flex-1">السؤال التالي</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-wave">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+        </svg>
+    </footer>
+
+    <script>
+        const students = {
+            "301": [ "فهد عليان عبدالله المتعاني", "حمد عزيز محمد المالكي", "محمد احمد محمد جعفري", "عماد سعود محيسن المتعاني", "عمر تركي علوش المالكي", "عامر ياسر احمد هوساوي", "مجاهد سامي مجاهد الحربي", "معاذ عيضه عثمان النمري", "رياض محمد عوض الطلحي", "عادل عبدالله بن عثمان القرشي", "زياد ماجد محمد الفعر", "أسامة عبدالله ابن فرحان الجعيد", "عادل سليم مسلم القرشي", "وسام سعيد بن خضران المالكي", "فيصل عبدالله عبدالرحمن القرشي", "سامي سليم بن هليل الحريثي", "طلال محمد عويض المتعاني", "عبدالمجيد صالح بن عوض الغامدي", "محمد طاهر محمد الشهراني", "سعود محمد خضر القريقاوي", "محمد عطاف بن دخيل الله العوفي", "يزيد احمد بطي الزايدي", "عمر محمد عبدالله الجهني", "اياد احمد بن محمد هادي", "هشام عادل قليل الخديدي", "رياض محمد علي الثبيتي", "مهند خالد محمد الثبيتي", "خالد فهد خالد الشاعر", "سلطان جزل ابن سلطان العتيبي", "عبدالمجيد ماجد نايف الراجحي", "محمد غازي جابر النمري" ],
+            "302": [ "عمر صالح مهدي الزهراني", "محمد عبدالعزيز احمد هزازي", "وافي سعد بن عبدالله البقمي", "بدر عواض عايض الجعيد", "نواف غازي صالح الخديدي", "عبدالمجيد محمد ضويان العصيمي", "مهند بندر بن فايت الحارثي", "مهند مشاري ابن خالد الحارثي", "خالد فيصل سعد الزهراني", "عبدالرحمن خالد احمد النفيعي", "عبدالعزيز عبدالرحمن دغش القحطاني", "مشاري عبدالرحمن بن محمد الثبيتي", "الحسين سليمان بن سعد الغالبي", "عبدالاله بن عبدالله بن محمد البدراني", "سطام سيف بن مسعود الحارثي", "محمد حاسن هليل الحريثي", "هاشم هشام عطاء الله العصيمي", "عزام فائز بن مسلم العيلي", "سعيد محمد سعيد الزهراني", "تركي مستور سفر السفياني", "تميم سطام احمد الغامدي", "احمد سلمان مسلم القرشي", "عبدالعزيز محمد عطيه القرشي", "ناصر فيصل جمعان الزهراني", "عبدالرحمن هاني عبدالله القرشي", "عبدالعزيز ناصر عبدالجبار الطلحي", "مهند رائد خلف الله الطويرقي", "جسار عطيه سعد الزهراني", "مهند باسم بن سعد الحربي", "سطام محمد عبدالله الهذلي", "أنس مالك عمر القرشي" ]
+        };
+
+        const questions = [
+            // Questions data remains the same as previous version...
+            {
+                title: 'تدريب 1: حدد الجملة الصحيحة والجملة الخطأ',
+                question: `
+                    <div class="space-y-3 text-base">
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md">
+                            <span class="text-right"></span><span class="font-bold text-center">صحيحة</span><span class="font-bold text-center">خطأ</span>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                            <span class="text-right">1. تنحصر عملية تطوير البرمجيات في الصيانة.</span>
+                            <div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div><div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                            <span class="text-right">2. من إجراءات التوثيق، كتابة تعليقات وصفية للمقاطع البرمجية.</span>
+                            <div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div><div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                           <span class="text-right">3. أثناء إنشاء البرنامج ، تشمل مرحلة التطوير إنشاء وتطوير واختبار نظام المعلومات.</span>
+                           <div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div><div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                           <span class="text-right">4. يمكنك طرح الأسئلة على جميع الأشخاص المعنيين في النظام، من أجل جمع المتطلبات في مرحلة التحليل.</span>
+                           <div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div><div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                            <span class="text-right">5. أثناء إنشاء البرنامج، يكتب محلل النظم المقطع البرمجي للبرنامج أثناء عملية التطوير.</span>
+                           <div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div><div class="w-10 h-6 border-2 border-gray-400 rounded mx-auto"></div>
+                        </div>
+                    </div>`,
+                answer: `
+                    <div class="space-y-3 text-base">
+                         <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md">
+                            <span class="text-right"></span><span class="font-bold text-center">صحيحة</span><span class="font-bold text-center">خطأ</span>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                            <span class="text-right">1. تنحصر عملية تطوير البرمجيات في الصيانة.</span>
+                            <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"></div>
+                            <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"><span class="answer-check bg-green-500">✓</span></div>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                           <span class="text-right">2. من إجراءات التوثيق، كتابة تعليقات وصفية للمقاطع البرمجية.</span>
+                           <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"><span class="answer-check bg-green-500">✓</span></div>
+                           <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"></div>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                           <span class="text-right">3. أثناء إنشاء البرنامج ، تشمل مرحلة التطوير إنشاء وتطوير واختبار نظام المعلومات.</span>
+                           <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"></div>
+                           <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"><span class="answer-check bg-green-500">✓</span></div>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                            <span class="text-right">4. يمكنك طرح الأسئلة على جميع الأشخاص المعنيين في النظام، من أجل جمع المتطلبات في مرحلة التحليل.</span>
+                           <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"><span class="answer-check bg-green-500">✓</span></div>
+                           <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"></div>
+                        </div>
+                        <div class="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center p-2 rounded-md bg-gray-100">
+                            <span class="text-right">5. أثناء إنشاء البرنامج، يكتب محلل النظم المقطع البرمجي للبرنامج أثناء عملية التطوير.</span>
+                           <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"></div>
+                           <div class="w-10 h-6 rounded mx-auto flex justify-center items-center"><span class="answer-check bg-green-500">✓</span></div>
+                        </div>
+                    </div>`
+            },
+            {
+                title: 'تدريب 2: عرّف دورة حياة النظام',
+                question: "عرّف دورة حياة النظام لإنشاء متجر إلكتروني من خلال سرد مراحلها.",
+                answer: `استنادًا إلى ما ورد في كتاب الطالب، يمكن للطلبة تحديد دورة حياة النظام لإنشاء متجر عبر الإنترنت، من خلال تطبيق التفكير النقدي. يمكن أن تكون إحدى الإجابات المحتملة ما يأتي:
+                    <ul class="list-disc pr-5 space-y-2 mt-2">
+                        <li><b>التحليل:</b> يتضمن المرحلة تحليل متطلبات متجر إلكتروني.</li>
+                        <li><b>التصميم:</b> هذه المرحلة تتضمن بناء هيكلية المتجر الإلكتروني وتصميمه.</li>
+                        <li><b>التطوير والاختبار:</b> تتضمن مرحلة التطوير الترميز وبناء المتجر الفعلي عبر الإنترنت بناءً على مواصفات التصميم.</li>
+                        <li><b>التنفيذ:</b> هذه المرحلة تتضمن إنشاء البنية التحتية اللازمة للمتجر عبر الإنترنت.</li>
+                        <li><b>الصيانة:</b> وتشمل مراقبة أداء النظام.</li>
+                        <li><b>التوثيق:</b> هذه المرحلة تتضمن وصفا لجميع تفاصيل التصميم والتطوير والاختبار والتنفيذ وسجلات صيانة نظام المتجر الإلكتروني.</li>
+                        <li><b>التقييم:</b> يساعد في تحديد أي مشكلات أو مجالات للتحسين في المتجر عبر الإنترنت.</li>
+                    </ul>`
+            },
+            {
+                title: 'تدريب 3: اختر الإجابة الصحيحة',
+                question: `
+                    <div class="space-y-6">
+                        <div>
+                            <p>1. المرحلة التي تستخدم فيها أدوات جمع البيانات هي مرحلة:</p>
+                            <div class="grid grid-cols-2 gap-3 mt-2 text-center">
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التحليل</div><div class="p-3 border-2 border-gray-200 rounded-lg">التصميم</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التنفيذ</div><div class="p-3 border-2 border-gray-200 rounded-lg">الصيانة</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p>2. المرحلة التي تستخدم فيها إحدى لغات البرمجة لإعداد النظام هي مرحلة:</p>
+                             <div class="grid grid-cols-2 gap-3 mt-2 text-center">
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التصميم</div><div class="p-3 border-2 border-gray-200 rounded-lg">التقييم</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التطوير</div><div class="p-3 border-2 border-gray-200 rounded-lg">التوثيق</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p>3. المرحلة التي يتم فيها إعداد دليل المستخدم للنظام هي مرحلة:</p>
+                            <div class="grid grid-cols-2 gap-3 mt-2 text-center">
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التحليل</div><div class="p-3 border-2 border-gray-200 rounded-lg">التوثيق</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التقييم</div><div class="p-3 border-2 border-gray-200 rounded-lg">الاختبار</div>
+                            </div>
+                        </div>
+                         <div>
+                            <p>4. يتم في مرحلة الصيانة الخاصة بتطبيق الهاتف الذكي:</p>
+                            <div class="space-y-3 mt-2">
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">إنشاء التطبيق باستخدام مطور التطبيقات (App Inventor)</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">تحديد احتياجات المستخدمين.</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">استقبال التغذية الراجعة من المستخدمين.</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">تصميم التطبيق للعمل على نظام أندرويد.</div>
+                            </div>
+                        </div>
+                    </div>`,
+                answer: `
+                    <div class="space-y-6">
+                        <div>
+                            <p>1. المرحلة التي تستخدم فيها أدوات جمع البيانات هي مرحلة:</p>
+                            <div class="grid grid-cols-2 gap-3 mt-2 text-center">
+                                <div class="p-3 rounded-lg answer-highlight">التحليل</div><div class="p-3 border-2 border-gray-200 rounded-lg">التصميم</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التنفيذ</div><div class="p-3 border-2 border-gray-200 rounded-lg">الصيانة</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p>2. المرحلة التي تستخدم فيها إحدى لغات البرمجة لإعداد النظام هي مرحلة:</p>
+                             <div class="grid grid-cols-2 gap-3 mt-2 text-center">
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التصميم</div><div class="p-3 border-2 border-gray-200 rounded-lg">التقييم</div>
+                                <div class="p-3 rounded-lg answer-highlight">التطوير</div><div class="p-3 border-2 border-gray-200 rounded-lg">التوثيق</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p>3. المرحلة التي يتم فيها إعداد دليل المستخدم للنظام هي مرحلة:</p>
+                            <div class="grid grid-cols-2 gap-3 mt-2 text-center">
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التحليل</div><div class="p-3 rounded-lg answer-highlight">التوثيق</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">التقييم</div><div class="p-3 border-2 border-gray-200 rounded-lg">الاختبار</div>
+                            </div>
+                        </div>
+                         <div>
+                            <p>4. يتم في مرحلة الصيانة الخاصة بتطبيق الهاتف الذكي:</p>
+                            <div class="space-y-3 mt-2">
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">إنشاء التطبيق باستخدام مطور التطبيقات (App Inventor)</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">تحديد احتياجات المستخدمين.</div>
+                                <div class="p-3 rounded-lg answer-highlight">استقبال التغذية الراجعة من المستخدمين.</div>
+                                <div class="p-3 border-2 border-gray-200 rounded-lg">تصميم التطبيق للعمل على نظام أندرويد.</div>
+                            </div>
+                        </div>
+                    </div>`
+            },
+            {
+                title: 'تدريب 4: صل بين كل مرحلة وما يناسبها',
+                interactive: true,
+                question: `<div id="match-game" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                            <div id="match-stages" class="space-y-2">
+                                <div class="p-2 border-2 rounded-lg bg-gray-100 shadow-sm text-center font-bold">المراحل</div>
+                                <div class="match-item p-2 border-2 rounded-lg" data-match-id="6">التحليل</div>
+                                <div class="match-item p-2 border-2 rounded-lg" data-match-id="5">التصميم</div>
+                                <div class="match-item p-2 border-2 rounded-lg" data-match-id="3">التطوير والاختبار</div>
+                                <div class="match-item p-2 border-2 rounded-lg" data-match-id="1">التنفيذ</div>
+                                <div class="match-item p-2 border-2 rounded-lg" data-match-id="2">الصيانة</div>
+                                <div class="match-item p-2 border-2 rounded-lg" data-match-id="4">التوثيق</div>
+                                <div class="match-item p-2 border-2 rounded-lg" data-match-id="7">التقييم</div>
+                            </div>
+                            <div id="match-ops" class="space-y-2">
+                                <div class="p-2 border-2 rounded-lg bg-gray-100 shadow-sm text-center font-bold">العمليات</div>
+                                <div class="match-item p-2 border-2 rounded-lg text-sm" data-match-id="1">نشر وتنصيب النظام في الموقع المستهدف ليكون جاهزا للعمل.</div>
+                                <div class="match-item p-2 border-2 rounded-lg text-sm" data-match-id="2">تحسين ورفع جودة وظائف النظام بناء على التغذية الراجعة من المستخدمين.</div>
+                                <div class="match-item p-2 border-2 rounded-lg text-sm" data-match-id="3">تحويل المتطلبات والمواصفات إلى مقاطع برمجية وتجربتها.</div>
+                                <div class="match-item p-2 border-2 rounded-lg text-sm" data-match-id="4">وصف تفصيلي لجميع عمليات ومراحل تصميم النظام بشكل مكتوب ومنظم.</div>
+                                <div class="match-item p-2 border-2 rounded-lg text-sm" data-match-id="5">تحديد البيانات التي ينبغي على النظام معالجتها وآلية تدفقها بين أجزاء النظام.</div>
+                                <div class="match-item p-2 border-2 rounded-lg text-sm" data-match-id="6">تحديد المشكلة التي تحتاج إلى حل.</div>
+                                <div class="match-item p-2 border-2 rounded-lg text-sm" data-match-id="7">يمكن تنفيذها ليس فقط من قبل فريق تقنية المعلومات ولكن أيضًا بواسطة المستخدمين والإدارة.</div>
+                            </div>
+                        </div>`,
+                answer: `<ul class="list-none space-y-3"><li><span class="font-bold text-teal-700">التحليل:</span> تحديد المشكلة التي تحتاج إلى حل.</li><li><span class="font-bold text-teal-700">التصميم:</span> تحديد البيانات التي ينبغي على النظام معالجتها وآلية تدفقها بين أجزاء النظام.</li><li><span class="font-bold text-teal-700">التطوير والاختبار:</span> تحويل المتطلبات والمواصفات إلى مقاطع برمجية وتجربتها.</li><li><span class="font-bold text-teal-700">التنفيذ:</span> نشر وتنصيب النظام في الموقع المستهدف ليكون جاهزا للعمل.</li><li><span class="font-bold text-teal-700">الصيانة:</span> تحسين ورفع جودة وظائف النظام بناء على التغذية الراجعة من المستخدمين.</li><li><span class="font-bold text-teal-700">التوثيق:</span> وصف تفصيلي لجميع عمليات ومراحل تصميم النظام بشكل مكتوب ومنظم.</li><li><span class="font-bold text-teal-700">التقييم:</span> يمكن تنفيذها ليس فقط من قبل فريق تقنية المعلومات ولكن أيضًا بواسطة المستخدمين والإدارة.</li></ul>`
+            },
+            {
+                title: 'تدريب 5: وضح دور المستخدم',
+                question: "وضح دور المستخدم في كل مرحلة من مراحل دورة حياة النظام.",
+                answer: `استنادًا إلى ما ورد في كتاب الطالب، يمكن للطلبة وصف دور المستخدم في كل مرحلة من مراحل دورة حياة النظام من خلال تطبيق التفكير النقدي. يمكن أن تكون إحدى الإجابات المحتملة ما يأتي:
+                    <ul class="list-disc pr-5 space-y-2 mt-2">
+                        <li><b>التحليل:</b> يقدم المستخدمون المدخلات والمتطلبات، ويشاركون احتياجاتهم وأهدافهم للنظام.</li>
+                        <li><b>مرحلة التصميم:</b> يشارك محلل النظم بتقديم الخبرات والمهارات في بناء هيكل وتصميم النظام، حيث تنقسم المشكلة الرئيسة إلى مشاكل أصغر يمكن حلها باستخدام جهاز الحاسوب.</li>
+                        <li><b>التطوير والاختبار:</b> يراجع ويتحقق المستخدمون من صحة مواد التوثيق، والمشاركة في اختبار قبول المستخدم؛ للتأكد من أن النظام يلبي توقعاتهم.</li>
+                        <li><b>التنفيذ:</b> يتعاون المستخدمون في مهام مثل ترحيل البيانات، وتكوين النظام وتلقي التدريب؛ لاستخدام النظام بشكل فعال.</li>
+                        <li><b>الصيانة:</b> يبلغ المستخدمون عن المشكلات والأخطاء، وتقديم الملاحظات؛ لتحسين النظام.</li>
+                        <li><b>التوثيق:</b> يراجع المستخدمون الوثائق؛ للتأكد من دقتها وأهميتها وسهولة استخدامها.</li>
+                        <li><b>التقييم:</b> يقدم المستخدمون تعليقات على أداء النظام، وقابلية الاستخدام، والرضا العام؛ لتقييم النجاح واقتراح التحسينات.</li>
+                    </ul>`
+            },
+            {
+                title: 'تدريب 6: إنشاء موقع على الإنترنت',
+                question: "افترض أنك تريد إنشاء موقع على الإنترنت. ما الإجراءات التي تتضمنها مراحل التطوير والاختبار والتنفيذ؟ علل إجابتك.",
+                answer: `الإجراءات المتضمنة في مراحل التطوير والاختبار والتنفيذ لإنشاء موقع على شبكة الإنترنت هي:
+                    <ul class="list-disc pr-5 space-y-2 mt-2">
+                        <li><b>التطوير:</b> تتضمن هذه المرحلة تحليل المتطلبات وتصميم عناصر الموقع، وإنشاء المحتوى ودمج المكونات؛ بما يضمن أن الموقع مبني حسب المواصفات ويلبي احتياجات العميل.</li>
+                        <li><b>الاختبار:</b> تتضمن هذه المرحلة اختبارات مختلفة تتحقق من وظائف الموقع الإلكتروني وأدائه وأمانه وتوافقه؛ مما يضمن أنه خالٍ من الأخطاء ويلبي متطلبات المستخدم.</li>
+                        <li><b>التنفيذ:</b> تتضمن هذه المرحلة نشر الموقع الإلكتروني على الخادم المباشر، وتكوين البنية التحتية اللازمة، ونقل البيانات إذا لزم الأمر.</li>
+                    </ul>`
+            }
+        ];
+
+        let currentQuestionIndex = -1;
+        let reportData = [];
+
+        // --- DOM ELEMENTS ---
+        const classSelect = document.getElementById('class-select');
+        const studentSelect = document.getElementById('student-select');
+        const randomStudentBtn = document.getElementById('random-student-btn');
+        const exportReportBtn = document.getElementById('export-report-btn');
+        const respondentSection = document.getElementById('respondent-section');
+        const respondentName = document.getElementById('respondent-name');
+        const questionTitleEl = document.getElementById('question-title');
+        const questionEl = document.getElementById('question');
+        const answerContainer = document.getElementById('answer-container');
+        const answerEl = document.getElementById('answer');
+        const showAnswerBtn = document.getElementById('show-answer-btn');
+        const nextQuestionBtn = document.getElementById('next-question-btn');
+        const evaluationSection = document.getElementById('evaluation-section');
+        const correctBtn = document.getElementById('correct-btn');
+        const incorrectBtn = document.getElementById('incorrect-btn');
+        
+        // --- FUNCTIONS ---
+        function populateClasses() {
+            classSelect.innerHTML = '';
+            Object.keys(students).forEach(classId => {
+                const option = document.createElement('option');
+                option.value = classId;
+                option.textContent = `فصل ${classId}`;
+                classSelect.appendChild(option);
+            });
+        }
+        
+        function populateStudents(classId) {
+            studentSelect.innerHTML = '';
+            students[classId].forEach(student => {
+                const option = document.createElement('option');
+                option.value = student;
+                option.textContent = student;
+                studentSelect.appendChild(option);
+            });
+        }
+        
+        function selectRandomStudent() {
+            const classId = classSelect.value;
+            const classStudents = students[classId];
+            const randomIndex = Math.floor(Math.random() * classStudents.length);
+            studentSelect.selectedIndex = randomIndex;
+            updateRespondent();
+        }
+
+        function updateRespondent() {
+            const selectedStudent = studentSelect.value;
+            respondentName.textContent = selectedStudent;
+            respondentSection.style.display = 'block';
+        }
+
+        function displayQuestion() {
+            currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+
+            const { title, question, answer, interactive } = questions[currentQuestionIndex];
+            questionTitleEl.innerHTML = title;
+            questionEl.innerHTML = question;
+            answerEl.innerHTML = answer;
+            
+            resetUiState();
+
+            if(interactive) {
+                initializeMatchingGame();
+            }
+        }
+
+        function resetUiState() {
+            answerContainer.style.display = 'none';
+            showAnswerBtn.style.display = 'block';
+            evaluationSection.style.display = 'none';
+            correctBtn.disabled = false;
+            incorrectBtn.disabled = false;
+        }
+
+        function recordAnswer(status) {
+            const studentName = studentSelect.value;
+            const questionTitle = questions[currentQuestionIndex].title;
+            reportData.push({ studentName, questionTitle, status });
+            correctBtn.disabled = true;
+            incorrectBtn.disabled = true;
+        }
+
+        function exportReport() {
+            const studentName = studentSelect.value;
+            if (!studentName) {
+                alert("الرجاء اختيار طالب أولاً.");
+                return;
+            }
+            if (reportData.length === 0) {
+                alert("لا توجد بيانات لتصديرها.");
+                return;
+            }
+            
+            const studentReportData = reportData.filter(entry => entry.studentName === studentName);
+            if (studentReportData.length === 0) {
+                alert(`لا توجد إجابات مسجلة للطالب: ${studentName}`);
+                return;
+            }
+
+            let reportContent = `تقرير الطالب: ${studentName}\n`;
+            reportContent += `تاريخ: ${new Date().toLocaleString('ar-SA')}\n`;
+            reportContent += "==================================\n\n";
+
+            studentReportData.forEach((entry, index) => {
+                reportContent += `${index + 1}. السؤال: ${entry.questionTitle}\n`;
+                reportContent += `   الحالة: ${entry.status}\n\n`;
+            });
+
+            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `تقرير-${studentName}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- Interactive Matching Game Logic ---
+        let selectedStage = null;
+        function initializeMatchingGame() {
+            const stages = document.querySelectorAll('#match-stages .match-item');
+            const ops = document.querySelectorAll('#match-ops .match-item');
+
+            stages.forEach(stage => stage.addEventListener('click', handleStageClick));
+            ops.forEach(op => op.addEventListener('click', handleOpClick));
+        }
+
+        function handleStageClick(e) {
+            if (e.target.classList.contains('matched')) return;
+            
+            const currentSelected = document.querySelector('#match-stages .selected');
+            if(currentSelected) {
+                currentSelected.classList.remove('selected');
+            }
+            
+            e.target.classList.add('selected');
+            selectedStage = e.target;
+        }
+
+        function handleOpClick(e) {
+            if (e.target.classList.contains('matched') || !selectedStage) return;
+
+            const op = e.target;
+            if (selectedStage.dataset.matchId === op.dataset.matchId) {
+                selectedStage.classList.add('matched');
+                op.classList.add('matched');
+                selectedStage.classList.remove('selected');
+                selectedStage = null;
+            } else {
+                // Incorrect match visual feedback
+                op.classList.add('bg-red-200');
+                setTimeout(() => op.classList.remove('bg-red-200'), 500);
+            }
+        }
+
+
+        // --- EVENT LISTENERS ---
+        classSelect.addEventListener('change', (e) => {
+            populateStudents(e.target.value);
+            updateRespondent();
+        });
+        studentSelect.addEventListener('change', updateRespondent);
+        randomStudentBtn.addEventListener('click', selectRandomStudent);
+        exportReportBtn.addEventListener('click', exportReport);
+
+        showAnswerBtn.addEventListener('click', () => {
+            answerContainer.style.display = 'block';
+            showAnswerBtn.style.display = 'none';
+            evaluationSection.style.display = 'flex';
+        });
+
+        nextQuestionBtn.addEventListener('click', () => {
+             if (!studentSelect.value) {
+                alert("الرجاء اختيار طالب أولاً.");
+                return;
+             }
+             displayQuestion();
+        });
+
+        correctBtn.addEventListener('click', () => recordAnswer('أجاب'));
+        incorrectBtn.addEventListener('click', () => recordAnswer('لم يجب'));
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            populateClasses();
+            populateStudents(classSelect.value);
+            updateRespondent();
+            displayQuestion();
+        });
+
+    </script>
+</body>
+</html>
+
