@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدرس التفاعلي: أساسيات الشبكات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --bg-color: #ecf0f1;
+            --text-color: #34495e;
+            --light-gray: #bdc3c7;
+            --card-bg: #ffffff;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --gold-medal: #ffd700;
+            --silver-medal: #c0c0c0;
+            --bronze-medal: #cd7f32;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+
+        .main-content {
+            display: flex;
+        }
+
+        nav {
+            width: 200px;
+            background-color: #34495e;
+            padding: 15px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        nav h3 {
+            margin-top: 0;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            padding: 12px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 1.1em;
+        }
+
+        nav li:hover, nav li.active {
+            background-color: var(--secondary-color);
+        }
+
+        .content-area {
+            flex-grow: 1;
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: var(--primary-color);
+            font-size: 1.5em;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .section-header h2 {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        .question-icon {
+            font-size: 1.5em;
+            color: var(--secondary-color);
+            cursor: pointer;
+            background: #f1f1f1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        .question-icon:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .illustration {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        table.styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .styled-table thead tr {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-align: right;
+        }
+        
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        /* --- Management Box --- */
+        .management-box {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 250px;
+            background: var(--card-bg);
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 15px;
+            z-index: 1000;
+        }
+        
+        .management-box h4 {
+            margin: 0 0 10px 0;
+            text-align: center;
+            color: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .management-box h4::after {
+            content: '−';
+            font-weight: bold;
+            padding: 0 5px;
+        }
+        .management-box.collapsed h4::after {
+            content: '+';
+        }
+        .management-box.collapsed .management-box-content {
+            display: none;
+        }
+        .management-box-content {
+            animation: fadeIn 0.5s;
+        }
+
+        .timer {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .timer-controls button {
+            margin: 0 5px;
+        }
+        
+        .management-box button, .btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .management-box button:hover, .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-danger { background-color: var(--accent-color); }
+        .btn-danger:hover { background-color: #c0392b; }
+        .btn-success { background-color: var(--success-color); }
+        .btn-success:hover { background-color: #27ae60; }
+        .btn-warning { background-color: var(--warning-color); }
+        .btn-warning:hover { background-color: #e67e22; }
+
+        select, input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--light-gray);
+            box-sizing: border-box;
+        }
+
+        #student-list {
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        #student-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        #student-list input {
+            border: none;
+            background: transparent;
+            width: 60%;
+        }
+        #student-list button {
+            font-size: 0.8em;
+            padding: 2px 5px;
+        }
+        
+        .add-student-form {
+            display: flex;
+            margin-top: 10px;
+        }
+        .add-student-form input {
+            flex-grow: 1;
+            margin-bottom: 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .add-student-form button {
+            border-radius: 5px 0 0 5px;
+            padding: 8px;
+        }
+
+        /* --- Modal --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 25px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 10px;
+            position: relative;
+            animation: slideIn 0.4s;
+        }
+        @keyframes slideIn {
+            from { top: -100px; opacity: 0; }
+            to { top: 0; opacity: 1; }
+        }
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover, .close-btn:focus {
+            color: black;
+        }
+
+        /* --- Story & Quizzes --- */
+        .story-box {
+            background-color: #fdfaf4;
+            border-right: 5px solid #f39c12;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .story-box h3 {
+            color: #d35400;
+        }
+        
+        .quiz-container {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+        .quiz-question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .quiz-options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #e9e9e9;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-options label:hover {
+            background: #dcdcdc;
+        }
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+        .quiz-feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .quiz-feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* --- Interactive Activities --- */
+        .knowledge-bulletin {
+            background-color: #eaf5ff;
+            border-right: 5px solid var(--secondary-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .click-track-activity {
+            margin: 20px 0;
+        }
+        .track-item {
+            background-color: #f1f1f1;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .track-item:hover {
+            background-color: #e0e0e0;
+        }
+        .track-item .content {
+            display: none;
+            margin-top: 10px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+        .track-item.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .track-item.active .content {
+            display: block;
+        }
+
+        .classroom-activity {
+            background-color: #fef5e7;
+            border-right: 5px solid #f39c12;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .classroom-activity ul {
+            padding-right: 20px;
+        }
+
+        /* --- Game --- */
+        .matching-game {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .game-column {
+            width: 48%;
+        }
+        .game-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: grab;
+            background: white;
+            text-align: center;
+        }
+        .game-item.selected {
+            border-color: var(--secondary-color);
+            background-color: #eaf5ff;
+        }
+        .game-item.correct {
+            border-color: var(--success-color);
+            background-color: #d4edda;
+            cursor: default;
+        }
+        #game-feedback {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 1.2em;
+        }
+        
+        /* --- Report --- */
+        #report-page table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        #report-page th, #report-page td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+        #report-page th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        #report-page .report-section {
+            margin-bottom: 30px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        /* --- Notification --- */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s, bottom 0.5s;
+        }
+        .notification.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 40px;
+        }
+        
+        /* --- Follow-up Modal (IMPROVED) --- */
+        #followup-modal .modal-header {
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        #followup-modal .modal-header h3, #followup-modal .modal-header p {
+            margin: 5px 0;
+        }
+        #followup-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #followup-table th, #followup-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        #followup-table th {
+            background-color: #f2f2f2;
+        }
+        #followup-table td:first-child {
+            text-align: right;
+            width: 35%;
+        }
+        .status-cell {
+            cursor: pointer;
+            font-size: 1.5em;
+            font-weight: bold;
+            width: 15%;
+        }
+        .status-cell.checked { color: var(--success-color); }
+        .status-cell.crossed { color: var(--accent-color); }
+        
+        .participation-cell {
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .behavior-cell input {
+            width: 90%;
+            padding: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        #followup-modal .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Management Box -->
+    <div class="management-box" id="management-box">
+        <h4 id="management-box-header">إدارة الحصة</h4>
+        <div class="management-box-content">
+            <div class="timer" id="timer-display">00:00</div>
+            <div class="timer-controls" style="text-align: center; margin-bottom: 15px;">
+                <button id="start-timer">بدء</button>
+                <button id="pause-timer">إيقاف</button>
+                <button id="reset-timer">إعادة</button>
+            </div>
+            <button id="open-followup-btn" style="width: 100%; margin-bottom: 10px;">كشف المتابعة</button>
+            
+            <hr>
+
+            <label for="class-select">اختر الفصل:</label>
+            <select id="class-select">
+                <option value="104" selected>104</option>
+                <option value="101">101</option>
+                <option value="102">102</option>
+                <option value="103">103</option>
+            </select>
+            
+            <label for="student-list-header" style="margin-top: 10px; display: block;">قائمة الطلاب:</label>
+            <ul id="student-list">
+                <!-- Student list will be populated by JS -->
+            </ul>
+            <div class="add-student-form">
+                <input type="text" id="new-student-name" placeholder="اسم الطالب الجديد">
+                <button id="add-student-btn">إضافة</button>
+            </div>
+
+            <label for="strategy-select" style="margin-top: 10px;">استراتيجية التدريس:</label>
+            <select id="strategy-select">
+                <option>التعلم التعاوني</option>
+                <option>المحاضرة التفاعلية</option>
+                <option>الاستقصاء الموجه</option>
+                <option>المناقشة والحوار</option>
+                <option>التعلم المدمج</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1 id="lesson-title">أساسيات الشبكات</h1>
+        </header>
+
+        <div class="main-content">
+            <nav>
+                <h3>قائمة الدرس</h3>
+                <ul id="nav-menu">
+                    <li data-page="intro" class="active">المقدمة والقصة</li>
+                    <li data-page="diagnostic-quiz">تقويم تشخيصي</li>
+                    <li data-page="section1">تحويل الحزم والعناوين</li>
+                    <li data-page="section2">البروتوكولات ونموذج OSI</li>
+                    <li data-page="section3">بروتوكولات الإنترنت</li>
+                    <li data-page="section4">جدار الحماية</li>
+                    <li data-page="activity">نشاط صفي وتكويني</li>
+                    <li data-page="game">لعبة توصيل المفاهيم</li>
+                    <li data-page="report">التقرير الشامل للحصة</li>
+                </ul>
+            </nav>
+
+            <main class="content-area">
+                <!-- Page 1: Introduction & Story -->
+                <div id="intro-page" class="page active">
+                    <div class="section-header">
+                        <h2>تمهيد: قصة أول رسالة إلكترونية</h2>
+                    </div>
+                     <div class="story-box">
+                        <h3>قصة "LO": أول رسالة في تاريخ الإنترنت</h3>
+                        <p>في 29 أكتوبر 1969، حاول الطالب المبرمج "تشارلي كلاين" إرسال أول رسالة عبر شبكة أربانت (ARPANET)، التي كانت نواة الإنترنت. كانت الرسالة المخطط لها هي كلمة "LOGIN". جلس كلاين في جامعة كاليفورنيا، بينما كان زميله "بيل دوفال" ينتظر في معهد ستانفورد للأبحاث على بعد مئات الأميال.</p>
+                        <p>بدأ كلاين بكتابة "L" وسأل دوفال عبر الهاتف: "هل ترى حرف L؟" أجاب دوفال: "نعم، أراه". ثم كتب كلاين "O" وسأل مجددًا، وجاء الرد بالإيجاب. ولكن عندما كتب حرف "G"، انهار النظام! لم تصل بقية الرسالة. وهكذا، كانت أول رسالة أُرسلت في تاريخ الإنترنت هي "LO". هذه الحادثة البسيطة تجسد جوهر عمل الشبكات: تقسيم البيانات (كلمة LOGIN) إلى أجزاء صغيرة (حزم)، وإرسالها عبر الشبكة، ثم إعادة تجميعها في الوجهة. حتى الفشل في المرة الأولى يوضح أهمية وجود بروتوكولات لضمان وصول البيانات بشكل صحيح.</p>
+                        <p><strong>المرجع:</strong> سجلات شبكة أربانت (ARPANET logs)، 1969.</p>
+                        <h3>فوائد مستخلصة من القصة:</h3>
+                        <ul>
+                            <li><strong>تقسيم البيانات:</strong> تعتمد الشبكات على تقسيم المعلومات الكبيرة إلى حزم صغيرة لإرسالها بكفاءة.</li>
+                            <li><strong>العنونة والتوجيه:</strong> لكي تصل الحزم إلى وجهتها الصحيحة، يجب أن يكون لكل جهاز عنوان فريد (مثل عنوان IP).</li>
+                            <li><strong>الحاجة إلى قواعد (بروتوكولات):</strong> لضمان فهم الأجهزة لبعضها البعض وإعادة تجميع الرسالة بشكل صحيح، لا بد من وجود مجموعة من القواعد الموحدة التي تتبعها جميع الأجهزة على الشبكة.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Page 2: Diagnostic Quiz -->
+                <div id="diagnostic-quiz-page" class="page">
+                    <h2>تقويم تشخيصي</h2>
+                    <p>أجب عن الأسئلة التالية لقياس معرفتك المبدئية بالموضوع.</p>
+                    <div class="quiz-container" id="diag-quiz1">
+                        <p class="quiz-question">1. عند إرسال رسالة عبر الإنترنت، ماذا يحدث لها أولاً؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="q1" value="a"> يتم إرسالها كقطعة واحدة كاملة.</label>
+                            <label><input type="radio" name="q1" value="b"> يتم تقسيمها إلى حزم صغيرة.</label>
+                            <label><input type="radio" name="q1" value="c"> يتم تشفيرها دائمًا.</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('diag-quiz1', 'b', 'q1')">تحقق من الإجابة</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-container" id="diag-quiz2">
+                        <p class="quiz-question">2. ما هو عنوان IP؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="q2" value="a"> اسم الموقع الإلكتروني (مثل google.com).</label>
+                            <label><input type="radio" name="q2" value="b"> عنوان رقمي فريد يحدد كل جهاز على الشبكة.</label>
+                            <label><input type="radio" name="q2" value="c"> كلمة مرور للوصول إلى الإنترنت.</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('diag-quiz2', 'b', 'q2')">تحقق من الإجابة</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-container" id="diag-quiz3">
+                        <p class="quiz-question">3. ما هو "البروتوكول" في عالم الشبكات؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="q3" value="a"> جهاز لتسريع الإنترنت.</label>
+                            <label><input type="radio" name="q3" value="b"> نوع من الفيروسات.</label>
+                            <label><input type="radio" name="q3" value="c"> مجموعة من القواعد التي تحكم الاتصال بين الأجهزة.</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('diag-quiz3', 'c', 'q3')">تحقق من الإجابة</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Page 3: Section 1 -->
+                <div id="section1-page" class="page">
+                    <div class="section-header">
+                        <div class="question-icon" onclick="openQuestionModal('لماذا يتم تقسيم الرسائل إلى حزم بدلاً من إرسالها كملف واحد كبير؟ ما هي فائدة ذلك إذا كان أحد مسارات الشبكة مزدحمًا أو معطلاً؟', 'section1')">؟</div>
+                        <h2>تحويل الحزم والعناوين</h2>
+                    </div>
+                    <h3>تحويل الحزمة (Packet Switching)</h3>
+                    <p>من أجل نقل الرسائل بين مختلف الأجهزة عبر الشبكات بطريقة أكثر فعالية، يتم تقسيم كل رسالة إلى حزم (Packets) مرقمة. يتم إرسال هذه الحزم من الجهاز المرسل، ثم يتم تجميعها في الجهاز المستقبل لإعادة تكوين الرسالة الأصلية. قد تسلك الحزم مسارات مختلفة عبر الشبكة للوصول إلى وجهتها، مما قد يؤدي إلى وصولها بترتيب مختلف.</p>
+                    
+                    <svg class="illustration" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                        <style>.label-net { font-family: 'Tajawal', sans-serif; font-size: 14px; text-anchor: middle; }</style>
+                        <!-- Source -->
+                        <rect x="20" y="80" width="100" height="140" fill="#f0f0f0" stroke="#ccc"/>
+                        <text x="70" y="150" class="label-net">الرسالة الأصلية</text>
+                        <rect x="20" y="80" width="100" height="40" fill="#f8d7da"/>
+                        <text x="70" y="105" class="label-net">حزمة 3</text>
+                        <rect x="20" y="120" width="100" height="40" fill="#d4edda"/>
+                        <text x="70" y="145" class="label-net">حزمة 2</text>
+                        <rect x="20" y="160" width="100" height="40" fill="#fff3cd"/>
+                        <text x="70" y="185" class="label-net">حزمة 1</text>
+
+                        <!-- Destination -->
+                        <rect x="680" y="80" width="100" height="140" fill="#f0f0f0" stroke="#ccc"/>
+                        <text x="730" y="150" class="label-net">الرسالة المستقبلة</text>
+                        <rect x="680" y="80" width="100" height="40" fill="#f8d7da"/>
+                        <text x="730" y="105" class="label-net">حزمة 3</text>
+                        <rect x="680" y="120" width="100" height="40" fill="#d4edda"/>
+                        <text x="730" y="145" class="label-net">حزمة 2</text>
+                        <rect x="680" y="160" width="100" height="40" fill="#fff3cd"/>
+                        <text x="730" y="185" class="label-net">حزمة 1</text>
+                        
+                        <!-- Internet Cloud -->
+                        <ellipse cx="400" cy="150" rx="180" ry="100" fill="#f0f0f0" stroke="#ccc"/>
+                        <text x="400" y="270" class="label-net">الإنترنت</text>
+                        
+                        <!-- Routers -->
+                        <circle cx="200" cy="150" r="15" fill="#3498db"/><text x="200" y="155" fill="white" font-size="10" class="label-net">R</text>
+                        <circle cx="580" cy="150" r="15" fill="#3498db"/><text x="580" y="155" fill="white" font-size="10" class="label-net">R</text>
+                        <circle cx="350" cy="100" r="15" fill="#3498db"/><text x="350" y="105" fill="white" font-size="10" class="label-net">R</text>
+                        <circle cx="450" cy="200" r="15" fill="#3498db"/><text x="450" y="205" fill="white" font-size="10" class="label-net">R</text>
+
+                        <!-- Paths -->
+                        <path d="M120 100 H 200" stroke="#f8d7da" stroke-width="2" fill="none"/>
+                        <path d="M120 140 H 200" stroke="#d4edda" stroke-width="2" fill="none"/>
+                        <path d="M120 180 H 200" stroke="#fff3cd" stroke-width="2" fill="none"/>
+                        <path d="M215 150 C 280 100, 300 100, 335 100" stroke="#d4edda" stroke-width="2" fill="none"/>
+                        <path d="M215 150 C 280 200, 300 200, 435 200" stroke="#f8d7da" stroke-width="2" fill="none"/>
+                        <path d="M365 100 C 450 100, 500 150, 565 150" stroke="#d4edda" stroke-width="2" fill="none"/>
+                        <path d="M465 200 C 500 200, 520 150, 565 150" stroke="#f8d7da" stroke-width="2" fill="none"/>
+                        <path d="M215 150 H 565" stroke="#fff3cd" stroke-width="2" fill="none"/>
+                        <path d="M595 150 H 680" stroke-width="2" stroke="gray" fill="none"/>
+                    </svg>
+
+                    <h3>عناوين الشبكة</h3>
+                    <p>لكي يتواصل جهازا حاسب، يجب أن يكون لكل منهما طريقة لتمييز الآخر. يتم هذا بطريقتين:</p>
+                    <ul>
+                        <li><strong>اسم المضيف (Hostname):</strong> هو اسم فريد قابل للقراءة للبشر، مثل <code>wikipedia.org</code>.</li>
+                        <li><strong>عنوان IP (Internet Protocol):</strong> هو عنوان رقمي تستخدمه الأجهزة للتواصل، مثل <code>91.198.174.225</code>. وهو يتكون من أربعة أرقام عشرية (من 0 إلى 255) مفصولة بنقاط.</li>
+                    </ul>
+                    <p><strong>نظام اسم المجال (DNS):</strong> هو بمثابة "دليل هاتف" الإنترنت. عندما تكتب اسم مضيف، يقوم DNS بترجمته تلقائيًا إلى عنوان IP المقابل له لتتمكن الأجهزة من التواصل.</p>
+                </div>
+                
+                <!-- Page 4: Section 2 -->
+                <div id="section2-page" class="page">
+                    <div class="section-header">
+                         <div class="question-icon" onclick="openQuestionModal('لماذا تم تقسيم نموذج OSI إلى 7 طبقات بدلاً من طبقة واحدة كبيرة؟ ما فائدة هذا التقسيم عند تطوير تقنيات جديدة؟', 'section2')">؟</div>
+                        <h2>البروتوكولات ونموذج OSI</h2>
+                    </div>
+                    <p>بروتوكول الشبكة هو مجموعة من القوانين التي تحدد كيف يتم تنسيق ومعالجة البيانات التي تمر عبر الشبكة. لتبسيط هذه العملية المعقدة، تم تقديم نموذج الاتصال المفتوح (OSI) كإطار مرجعي.</p>
+                    
+                    <h3>نموذج الاتصال المفتوح (OSI)</h3>
+                    <p>يحتوي نموذج OSI على 7 طبقات، كل طبقة منها تؤدي مهمة خاصة وتخدم الطبقة التي فوقها. هذا التقسيم يسمح بتطوير تقنيات جديدة في طبقة معينة دون التأثير على الطبقات الأخرى.</p>
+                    
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>الطبقة</th>
+                                <th>الاسم</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>7</td>
+                                <td>التطبيقات (Application)</td>
+                                <td>يتم فيها تشغيل التطبيقات البرمجية.</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>التقديم (Presentation)</td>
+                                <td>يتم فيها تشفير وفك تشفير البيانات.</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>الجلسة (Session)</td>
+                                <td>تؤسس عملية الاتصال بين المصدر والوجهة.</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>النقل (Transport)</td>
+                                <td>تضمن عملية نقل البيانات من المصدر إلى الوجهة مع تجنب الأخطاء.</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>الشبكة (Network)</td>
+                                <td>يتم من خلالها تحديد العنوان والمسار المنطقي اللازم لنقل البيانات.</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>ربط البيانات (Data Link)</td>
+                                <td>يتم فيها تحويل حزم البيانات إلى إطارات (Frames) وتحديد العنوان الفيزيائي.</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>الفيزيائية (Physical)</td>
+                                <td>تنقل البيانات من خلال الوسط الملموس كالتوصيلات والأسلاك.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Page 5: Section 3 -->
+                <div id="section3-page" class="page">
+                    <div class="section-header">
+                         <div class="question-icon" onclick="openQuestionModal('لماذا يعتبر بروتوكول UDP أسرع من TCP ولكنه أقل موثوقية؟ أعط مثالاً لتطبيق قد يفضل استخدام UDP على TCP.', 'section3')">؟</div>
+                        <h2>بروتوكولات الإنترنت (TCP/IP)</h2>
+                    </div>
+                    <p>يشير مصطلح TCP/IP إلى مجموعة من البروتوكولات التي تشكل قاعدة الاتصال عبر الإنترنت.</p>
+                    
+                    <ul>
+                        <li><strong>بروتوكول الإنترنت (IP):</strong> هو المسؤول عن توجيه الحزم عبر الشبكات إلى وجهتها النهائية.</li>
+                        <li><strong>بروتوكول التحكم في النقل (TCP):</strong> هو المسؤول عن تقسيم الرسائل إلى حزم عند المرسل، ثم إعادة ترتيبها وتجميعها عند المستقبل. كما أنه يتعامل مع أي أخطاء تحدث، مثل فقدان حزمة.</li>
+                    </ul>
+                    
+                    <h3>بروتوكولات عالية المستوى</h3>
+                    <p>توجد بروتوكولات أخرى تعمل "فوق" TCP/IP لتقديم خدمات محددة:</p>
+
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>الاختصار</th>
+                                <th>اسم البروتوكول</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>FTP</td>
+                                <td>بروتوكول نقل الملفات</td>
+                                <td>يسمح بنقل الملفات بين حاسبات الشبكة.</td>
+                            </tr>
+                            <tr>
+                                <td>SMTP</td>
+                                <td>بروتوكول نقل البريد الإلكتروني</td>
+                                <td>يستخدم لنقل رسائل البريد الإلكتروني.</td>
+                            </tr>
+                            <tr>
+                                <td>HTTP</td>
+                                <td>بروتوكول نقل النص التشعبي</td>
+                                <td>يضمن تبادل البيانات في الشبكة العنكبوتية العالمية (صفحات الويب).</td>
+                            </tr>
+                            <tr>
+                                <td>HTTPS</td>
+                                <td>بروتوكول نقل النص التشعبي الآمن</td>
+                                <td>يوفر اتصالاً آمنًا ومشفرًا بين حاسبين.</td>
+                            </tr>
+                            <tr>
+                                <td>DNS</td>
+                                <td>نظام اسم المجال</td>
+                                <td>نظام يحول أسماء المضيفين إلى عناوين IP المقابلة لها.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Page 6: Section 4 -->
+                 <div id="section4-page" class="page">
+                    <div class="section-header">
+                         <div class="question-icon" onclick="openQuestionModal('هل يمكن لجدار الحماية أن يحمي جهازك من الفيروسات الموجودة في مرفقات البريد الإلكتروني التي قمت بتنزيلها بنفسك؟ لماذا؟', 'section4')">؟</div>
+                        <h2>جدار الحماية (Firewall)</h2>
+                    </div>
+                    <p>جدار الحماية هو برنامج أو جهاز يستخدم لأمان الشبكة ويعتمد على التحكم في حركة نقل البيانات الواردة والصادرة من خلال تحليل حزم البيانات وتحديد ما إذا كان ينبغي السماح لها بالمرور أم لا. إنه ينشئ حاجز أمان يفصل ويحمي جهازك أو شبكتك من الإنترنت.</p>
+                    
+                    <svg class="illustration" viewBox="0 0 600 250" xmlns="http://www.w3.org/2000/svg">
+                        <style>.firewall-label { font-family: 'Tajawal', sans-serif; font-size: 14px; text-anchor: middle; }</style>
+                        <!-- Internet -->
+                        <g>
+                            <circle cx="500" cy="125" r="70" fill="none" stroke="#3498db" stroke-width="2"/>
+                            <line x1="500" y1="55" x2="500" y2="195" stroke="#3498db"/>
+                            <line x1="430" y1="125" x2="570" y2="125" stroke="#3498db"/>
+                            <text x="500" y="220" class="firewall-label">الإنترنت</text>
+                        </g>
+                        <!-- Firewall -->
+                        <g>
+                            <path d="M 300 75 V 175 L 250 195 V 55 Z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/>
+                            <path d="M 300 75 V 175 L 350 195 V 55 Z" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+                            <text x="300" y="40" class="firewall-label">جدار الحماية</text>
+                        </g>
+                        <!-- LAN -->
+                        <g>
+                             <rect x="50" y="50" width="80" height="60" rx="5" fill="#ecf0f1" stroke="#bdc3c7"/>
+                             <rect x="50" y="140" width="80" height="60" rx="5" fill="#ecf0f1" stroke="#bdc3c7"/>
+                             <text x="90" y="30" class="firewall-label">الشبكة المحلية (LAN)</text>
+                        </g>
+                        <!-- Connections -->
+                        <line x1="130" y1="80" x2="250" y2="80" stroke="#7f8c8d" stroke-dasharray="4,4"/>
+                        <line x1="130" y1="170" x2="250" y2="170" stroke="#7f8c8d" stroke-dasharray="4,4"/>
+                        <line x1="350" y1="125" x2="430" y2="125" stroke="#7f8c8d"/>
+                    </svg>
+                    
+                    <h3>أجيال جدر الحماية</h3>
+                    <div class="click-track-activity">
+                        <div class="track-item" onclick="toggleTrackItem(this)">
+                            <strong>الجيل الأول</strong>
+                            <div class="content">يعمل في طبقة الشبكة ويفحص كل حزمة على حدة بناءً على معلومات بروتوكول TCP/IP (مثل السماح بمرور حزم من خادم معين).</div>
+                        </div>
+                        <div class="track-item" onclick="toggleTrackItem(this)">
+                            <strong>الجيل الثاني</strong>
+                            <div class="content">يعمل أيضًا في طبقة الشبكة، ولكنه أكثر ذكاءً حيث يفحص مجموعة من الحزم ويحتفظ بحالة الاتصال (Stateful Inspection).</div>
+                        </div>
+                         <div class="track-item" onclick="toggleTrackItem(this)">
+                            <strong>الجيل الثالث</strong>
+                            <div class="content">يعمل في طبقة التطبيقات، ويمكنه تصفية بروتوكولات عالية المستوى مثل HTTP، واكتشاف البرمجيات الضارة وحظرها.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Page 7: Activity & Formative Quiz -->
+                <div id="activity-page" class="page">
+                    <h2>نشاط صفي وتقويم تكويني</h2>
+
+                    <div class="classroom-activity">
+                        <h4>نشاط صفي بسيط (مناقشة)</h4>
+                        <p><strong>الموضوع:</strong> أمان تصفح الإنترنت.</p>
+                        <p><strong>السؤال:</strong> "عندما تزورون موقع ويب يبدأ بـ <code>http://</code> بدلاً من <code>https://</code>، ما هي المخاطر التي قد تواجهونها، خاصة إذا كنتم تدخلون معلومات شخصية مثل اسم المستخدم وكلمة المرور؟"</p>
+                        <p><strong>الهدف:</strong> قياس فهم الطلاب لأهمية البروتوكولات الآمنة وتطبيقها في حياتهم اليومية.</p>
+                    </div>
+
+                    <div class="quiz-container" id="formative-quiz1">
+                        <p class="quiz-question"><strong>تقويم تكويني (تذكرة خروج):</strong> إذا أرسلت رسالة بريد إلكتروني لصديقك، وتم تقسيمها إلى ثلاث حزم، وسلكت كل حزمة مسارًا مختلفًا عبر الإنترنت. أي مما يلي يضمن إعادة تجميع الرسالة بالترتيب الصحيح عند صديقك؟</p>
+                        <div class="quiz-options">
+                            <label><input type="radio" name="fq1" value="a"> الموجهات (Routers)</label>
+                            <label><input type="radio" name="fq1" value="b"> نظام اسم المجال (DNS)</label>
+                            <label><input type="radio" name="fq1" value="c"> بروتوكول التحكم في النقل (TCP)</label>
+                        </div>
+                        <button class="btn" onclick="checkAnswer('formative-quiz1', 'c', 'fq1')">تحقق</button>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    
+                    <div class="quiz-container" id="formative-quiz2">
+                        <p class="quiz-question"><strong>تقويم تكويني (الخطأ المقصود):</strong> ناقش مع زملائك العبارة التالية: "كلما زاد عدد الموجهات التي تمر بها حزمة البيانات، وصلت الرسالة بشكل أسرع". هل هذه العبارة صحيحة دائمًا؟ ولماذا؟</p>
+                        <p>هذه العبارة خاطئة بشكل عام. كل موجه يضيف وقت معالجة صغير (تأخير). المسار الأسرع هو عادة المسار الذي يحتوي على أقل عدد من "القفزات" بين الموجهات، وأقل ازدحام.</p>
+                    </div>
+                </div>
+
+
+                <!-- Page 8: Game -->
+                <div id="game-page" class="page">
+                    <h2>لعبة توصيل المفاهيم</h2>
+                    <p>انقر على المفهوم في العمود الأيمن، ثم انقر على التعريف المناسب له في العمود الأيسر.</p>
+                    <div class="matching-game">
+                        <div class="game-column" id="definitions">
+                            <div class="game-item" data-match="1">يقسم الرسائل إلى حزم ويعيد تجميعها مع التحقق من الأخطاء.</div>
+                            <div class="game-item" data-match="2">العنوان الرقمي الفريد للكمبيوتر على الشبكة.</div>
+                            <div class="game-item" data-match="3">يعمل كدليل هاتف للإنترنت لترجمة أسماء المواقع.</div>
+                            <div class="game-item" data-match="4">ينشئ حاجز أمان لحماية الشبكة من الاتصالات المشبوهة.</div>
+                        </div>
+                        <div class="game-column" id="concepts">
+                            <div class="game-item" data-match="3">DNS</div>
+                            <div class="game-item" data-match="1">TCP</div>
+                            <div class="game-item" data-match="4">جدار الحماية (Firewall)</div>
+                            <div class="game-item" data-match="2">عنوان IP</div>
+                        </div>
+                    </div>
+                    <div id="game-feedback"></div>
+                </div>
+
+                <!-- Page 9: Report -->
+                <div id="report-page" class="page">
+                    <h2>التقرير الشامل للحصة</h2>
+                    <p>هذا ملخص تفاعلي للحصة الحالية. يتم تحديثه تلقائيًا بناءً على تفاعلات الطلاب. يمكنك تصديره للاحتفاظ به.</p>
+                    <div id="report-content">
+                        <div class="report-section">
+                            <h3>تفاصيل الحصة</h3>
+                            <table id="session-details-table">
+                                <!-- Report content will be generated by JS -->
+                            </table>
+                        </div>
+
+                        <div class="report-section">
+                            <h3>تفاعلات الطلاب (الأسئلة والميداليات)</h3>
+                            <table id="medals-report-table">
+                                <!-- Report content will be generated by JS -->
+                            </table>
+                        </div>
+                        
+                        <div class="report-section">
+                            <h3>ملخص كشف المتابعة</h3>
+                            <table id="followup-summary-table">
+                                 <!-- Report content will be generated by JS -->
+                            </table>
+                        </div>
+
+                        <div class="report-section">
+                             <h3>خطة النشاط اللاصفي (مشروع بحثي)</h3>
+                             <p><strong>الهدف:</strong> تعميق فهم الطلاب للبروتوكولات المختلفة وتطوير مهارات البحث والعمل الجماعي.</p>
+                             <p><strong>تنظيم الطلاب:</strong></p>
+                             <ul>
+                                 <li>يتم تقسيم طلاب الفصل إلى مجموعات صغيرة (4-5 طلاب) تسمى "فرق تحليل الشبكات".</li>
+                                 <li>يتم توزيع الطلاب بشكل يضمن وجود مستويات متنوعة من المهارة في كل مجموعة لتعزيز التعلم من الأقران.</li>
+                                 <li>تختار كل مجموعة قائدًا لتنظيم العمل ومنسقًا لعرض النتائج.</li>
+                             </ul>
+                             <p><strong>المهمة:</strong></p>
+                             <ol>
+                                 <li>تختار كل مجموعة أحد بروتوكولات الإنترنت عالية المستوى (مثل FTP, SMTP, HTTP, HTTPS).</li>
+                                 <li>تبحث المجموعة عن تاريخ البروتوكول، وظيفته الأساسية، وكيف يعمل، وفي أي طبقة من نموذج OSI يقع.</li>
+                                 <li>يقوم الفريق بإعداد عرض تقديمي بسيط (3-5 شرائح) لشرح ما توصلوا إليه.</li>
+                                 <li>يعرض كل فريق نتائجه أمام الفصل في الحصة التالية.</li>
+                             </ol>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="exportReport()">تصدير التقرير كـ HTML</button>
+                </div>
+            </main>
+        </div>
+        
+        <footer>
+            فكرة وتصميم: محمد مجممي
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="question-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('question-modal')">&times;</span>
+            <h3 id="modal-question-text"></h3>
+            <label for="modal-student-select">اختر الطالب:</label>
+            <select id="modal-student-select"></select>
+            <p>امنح الطالب ميدالية تقديرًا لمشاركته:</p>
+            <div>
+                <button class="btn" style="background-color: var(--gold-medal);" onclick="awardMedal('gold')">🥇 ذهبية</button>
+                <button class="btn" style="background-color: var(--silver-medal);" onclick="awardMedal('silver')">🥈 فضية</button>
+                <button class="btn" style="background-color: var(--bronze-medal);" onclick="awardMedal('bronze')">🥉 برونزية</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="followup-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('followup-modal')">&times;</span>
+            <div class="modal-header">
+                <h3>كشف متابعة الحصة</h3>
+                <p><strong>الدرس:</strong> <span id="followup-lesson-title"></span></p>
+                <p><strong>الصف:</strong> <span id="followup-class-name"></span> | <strong>التاريخ:</strong> <span id="followup-date"></span></p>
+            </div>
+            <div class="modal-body">
+                <table id="followup-table">
+                    <thead>
+                        <tr>
+                            <th>اسم الطالب</th>
+                            <th>الحضور</th>
+                            <th>المشاركة</th>
+                            <th>السلوك (ملاحظات)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="followup-table-body">
+                        <!-- Student rows will be generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <p><strong>مدير المدرسة:</strong> فهد القحطاني</p>
+                <button class="btn" id="export-followup-btn">تصدير كشف المتابعة</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+
+
+    <script>
+        // --- STATE MANAGEMENT ---
+        const appState = {
+            currentPage: 'intro',
+            currentClass: '104',
+            students: {
+                '104': [
+                    { id: 1, name: 'نواف منسي تركي الحارثي' },
+                    { id: 2, name: 'جسار تركي عيضه الجعيد' },
+                    { id: 3, name: 'فهد يوسف ضيف الله القرشي' },
+                    { id: 4, name: 'عبدالله خالد عبدالله النفيعي' },
+                    { id: 5, name: 'عبدالله بن فواز بن محسن الكعبي العمري' },
+                    { id: 6, name: 'مصعب ماهر بن محسن الغريبي' },
+                    { id: 7, name: 'اياد محمد سعيد القحطاني' },
+                    { id: 8, name: 'الحارث حمزه معتوق القرشي' },
+                    { id: 9, name: 'أنس محمد عبدالرحمن النمري' },
+                    { id: 10, name: 'فيصل محمد حسن الشهراني' },
+                    { id: 11, name: 'رعد تركي غانم السفياني' },
+                    { id: 12, name: 'أصيل علي عوض السواط' },
+                    { id: 13, name: 'غيث محمد قليل الخديدي' },
+                    { id: 14, name: 'عبدالرحمن ضيف الله ابن عبدالله القرشي' },
+                    { id: 15, name: 'سلمان فهد سلطان القحطاني' },
+                    { id: 16, name: 'عبدالحميد فهد عبدالحميد بشناق' },
+                    { id: 17, name: 'قصي خالد علي الحميدي' },
+                    { id: 18, name: 'عادل عابد عالي القرشي' },
+                    { id: 19, name: 'عبدالهادي فواز قليل الخديدي' },
+                    { id: 20, name: 'عبدالله ايمن عبدالله الفخري' },
+                    { id: 21, name: 'هشام ناصر حميد القرشي' },
+                    { id: 22, name: 'ياسر رمزي محمد العصيمي' }
+                ]
+            },
+            medals: [],
+            followup: {},
+            timer: {
+                interval: null,
+                seconds: 0,
+                isRunning: false
+            },
+            game: {
+                selectedConcept: null,
+                selectedDefinition: null,
+                correctPairs: 0,
+                totalPairs: 4
+            },
+            currentQuestion: {
+                section: null,
+                question: null
+            }
+        };
+
+        // --- DOM ELEMENTS ---
+        const navLinks = document.querySelectorAll('#nav-menu li');
+        const pages = document.querySelectorAll('.page');
+        const classSelect = document.getElementById('class-select');
+        const studentList = document.getElementById('student-list');
+        
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => navigateTo(link.dataset.page));
+            });
+            
+            // Initialize class management
+            classSelect.addEventListener('change', (e) => {
+                appState.currentClass = e.target.value;
+                initializeStudentsForClass(appState.currentClass);
+            });
+            initializeStudentsForClass(appState.currentClass);
+            
+            // Initialize timer controls
+            document.getElementById('start-timer').addEventListener('click', startTimer);
+            document.getElementById('pause-timer').addEventListener('click', pauseTimer);
+            document.getElementById('reset-timer').addEventListener('click', resetTimer);
+
+            // Initialize followup modal button
+            document.getElementById('open-followup-btn').addEventListener('click', openFollowupModal);
+            document.getElementById('export-followup-btn').addEventListener('click', exportFollowupReport);
+
+            // Initialize add student button
+            document.getElementById('add-student-btn').addEventListener('click', addStudent);
+
+            // Initialize management box toggle
+            document.getElementById('management-box-header').addEventListener('click', () => {
+                document.getElementById('management-box').classList.toggle('collapsed');
+            });
+            
+            // Initialize game
+            initializeGame();
+        });
+
+        // --- NAVIGATION ---
+        function navigateTo(pageId) {
+            appState.currentPage = pageId;
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === `${pageId}-page`);
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.dataset.page === pageId);
+            });
+            
+            if (pageId === 'report') {
+                generateReport();
+            }
+        }
+
+        // --- CLASS & STUDENT MANAGEMENT ---
+        function initializeStudentsForClass(classId) {
+            if (!appState.students[classId]) {
+                 appState.students[classId] = []; // Start with an empty list if class doesn't exist
+            }
+            if (!appState.followup[classId]) {
+                appState.followup[classId] = {};
+            }
+            
+            // Sync followup data with student list
+            const currentStudentIds = new Set(appState.students[classId].map(s => s.id));
+            // Add new students to followup
+            appState.students[classId].forEach(s => {
+                if (!appState.followup[classId][s.id]) {
+                    appState.followup[classId][s.id] = {
+                        attendance: 'unchecked', // unchecked, checked, crossed
+                        participation: 0,
+                        behavior: ''
+                    };
+                }
+            });
+            // Remove old students from followup
+            for (const studentId in appState.followup[classId]) {
+                if (!currentStudentIds.has(parseInt(studentId))) {
+                    delete appState.followup[classId][studentId];
+                }
+            }
+
+            renderStudentList();
+        }
+
+        function renderStudentList() {
+            studentList.innerHTML = '';
+            const currentStudents = appState.students[appState.currentClass] || [];
+            currentStudents.forEach(student => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <input type="text" value="${student.name}" onchange="updateStudentName(${student.id}, this.value)">
+                    <button class="btn-danger" onclick="deleteStudent(${student.id})">حذف</button>
+                `;
+                studentList.appendChild(li);
+            });
+        }
+
+        function updateStudentName(studentId, newName) {
+            const student = appState.students[appState.currentClass].find(s => s.id === studentId);
+            if (student) {
+                student.name = newName;
+                showNotification(`تم تحديث اسم الطالب.`);
+            }
+        }
+        
+        function addStudent() {
+            const nameInput = document.getElementById('new-student-name');
+            const newName = nameInput.value.trim();
+            if (newName === '') {
+                showNotification('الرجاء إدخال اسم الطالب.', 'warning');
+                return;
+            }
+
+            const newId = Date.now();
+            const newStudent = { id: newId, name: newName };
+
+            const currentClass = appState.currentClass;
+            if (!appState.students[currentClass]) {
+                appState.students[currentClass] = [];
+            }
+            appState.students[currentClass].push(newStudent);
+            
+            if (!appState.followup[currentClass]) {
+                appState.followup[currentClass] = {};
+            }
+            appState.followup[currentClass][newId] = {
+                attendance: 'unchecked',
+                participation: 0,
+                behavior: ''
+            };
+
+            nameInput.value = '';
+            renderStudentList();
+            showNotification('تمت إضافة الطالب بنجاح.');
+        }
+
+        function deleteStudent(studentId) {
+            const currentClass = appState.currentClass;
+            appState.students[currentClass] = appState.students[currentClass].filter(s => s.id !== studentId);
+            delete appState.followup[currentClass][studentId];
+            renderStudentList();
+            showNotification('تم حذف الطالب.', 'warning');
+        }
+
+        // --- TIMER ---
+        function startTimer() {
+            if (appState.timer.isRunning) return;
+            appState.timer.isRunning = true;
+            appState.timer.interval = setInterval(() => {
+                appState.timer.seconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            appState.timer.isRunning = false;
+            clearInterval(appState.timer.interval);
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            appState.timer.seconds = 0;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(appState.timer.seconds / 60);
+            const seconds = appState.timer.seconds % 60;
+            document.getElementById('timer-display').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // --- NOTIFICATIONS ---
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            if (!notification) return;
+
+            notification.textContent = message;
+            notification.style.backgroundColor = type === 'success' ? 'var(--primary-color)' : 'var(--accent-color)';
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // --- MODALS ---
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function openQuestionModal(question, section) {
+            if (!question || !section) return;
+            
+            appState.currentQuestion.section = section;
+            appState.currentQuestion.question = question;
+            
+            document.getElementById('modal-question-text').textContent = question;
+            const studentSelect = document.getElementById('modal-student-select');
+            studentSelect.innerHTML = '';
+            const currentStudents = appState.students[appState.currentClass] || [];
+            if(currentStudents.length === 0){
+                 const option = document.createElement('option');
+                 option.textContent = "لا يوجد طلاب في هذا الفصل";
+                 option.disabled = true;
+                 studentSelect.appendChild(option);
+            } else {
+                currentStudents.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = student.name;
+                    studentSelect.appendChild(option);
+                });
+            }
+            openModal('question-modal');
+        }
+
+        function awardMedal(type) {
+            const studentId = document.getElementById('modal-student-select').value;
+            if (!studentId) {
+                showNotification('الرجاء اختيار طالب أولاً.', 'warning');
+                return;
+            }
+            
+            const student = appState.students[appState.currentClass].find(s => s.id == studentId);
+            if (student) {
+                appState.medals.push({
+                    studentId: student.id,
+                    studentName: student.name,
+                    classId: appState.currentClass,
+                    section: appState.currentQuestion.section,
+                    medal: type
+                });
+                const medalType = type === 'gold' ? 'ذهبية' : type === 'silver' ? 'فضية' : 'برونزية';
+                showNotification(`تم منح ${student.name} ميدالية ${medalType}.`);
+            }
+            closeModal('question-modal');
+        }
+
+        // --- FOLLOW-UP MODAL (IMPROVED) ---
+        function openFollowupModal() {
+            document.getElementById('followup-lesson-title').textContent = document.getElementById('lesson-title').textContent;
+            document.getElementById('followup-class-name').textContent = appState.currentClass;
+            document.getElementById('followup-date').textContent = new Date().toLocaleDateString('ar-SA');
+            
+            const tableBody = document.getElementById('followup-table-body');
+            tableBody.innerHTML = '';
+            const currentStudents = appState.students[appState.currentClass];
+            const currentFollowup = appState.followup[appState.currentClass];
+
+            if (!currentStudents || currentStudents.length === 0) {
+                 tableBody.innerHTML = '<tr><td colspan="4">لا يوجد طلاب في هذا الفصل. الرجاء إضافتهم من لوحة الإدارة.</td></tr>';
+                 openModal('followup-modal');
+                 return;
+            }
+
+            currentStudents.forEach(student => {
+                const studentFollowup = currentFollowup[student.id];
+                const row = document.createElement('tr');
+                
+                let attendanceContent = '';
+                let attendanceClassName = 'status-cell';
+                if (studentFollowup.attendance === 'checked') {
+                    attendanceContent = '✓';
+                    attendanceClassName += ' checked';
+                } else if (studentFollowup.attendance === 'crossed') {
+                    attendanceContent = '✗';
+                    attendanceClassName += ' crossed';
+                }
+
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td class="${attendanceClassName}" data-student-id="${student.id}" data-category="attendance">${attendanceContent}</td>
+                    <td class="participation-cell" data-student-id="${student.id}" data-category="participation">${studentFollowup.participation}</td>
+                    <td class="behavior-cell"><input type="text" value="${studentFollowup.behavior || ''}" data-student-id="${student.id}" data-category="behavior"></td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            tableBody.querySelectorAll('.status-cell, .participation-cell, .behavior-cell input').forEach(cell => {
+                if (cell.tagName === 'INPUT') {
+                    cell.addEventListener('change', handleFollowupChange);
+                } else {
+                    cell.addEventListener('click', handleFollowupChange);
+                }
+            });
+
+            openModal('followup-modal');
+        }
+        
+        function handleFollowupChange(event) {
+            const element = event.target;
+            const studentId = element.dataset.studentId;
+            const category = element.dataset.category;
+            const classId = appState.currentClass;
+            
+            if (!appState.followup[classId][studentId]) return;
+
+            if (category === 'attendance') {
+                const currentState = appState.followup[classId][studentId].attendance;
+                let newState;
+                if (currentState === 'unchecked') newState = 'checked';
+                else if (currentState === 'checked') newState = 'crossed';
+                else newState = 'unchecked';
+                appState.followup[classId][studentId].attendance = newState;
+                
+                element.classList.remove('checked', 'crossed');
+                if (newState === 'checked') {
+                    element.textContent = '✓';
+                    element.classList.add('checked');
+                } else if (newState === 'crossed') {
+                    element.textContent = '✗';
+                    element.classList.add('crossed');
+                } else {
+                    element.textContent = '';
+                }
+            } else if (category === 'participation') {
+                appState.followup[classId][studentId].participation++;
+                element.textContent = appState.followup[classId][studentId].participation;
+            } else if (category === 'behavior') {
+                appState.followup[classId][studentId].behavior = element.value;
+            }
+        }
+
+        function exportFollowupReport() {
+            const classId = appState.currentClass;
+            const students = appState.students[classId];
+            const followupData = appState.followup[classId];
+            const lessonTitle = document.getElementById('lesson-title').textContent;
+            
+            if (!students || students.length === 0) {
+                showNotification('لا يمكن تصدير كشف فارغ.', 'warning');
+                return;
+            }
+
+            let tableRows = '';
+            students.forEach(student => {
+                const data = followupData[student.id];
+                if (!data) return;
+                const attendanceSymbol = (status) => {
+                    if (status === 'checked') return 'حاضر';
+                    if (status === 'crossed') return 'غائب';
+                    return 'لم يحدد';
+                };
+                tableRows += `
+                    <tr>
+                        <td>${student.name}</td>
+                        <td>${attendanceSymbol(data.attendance)}</td>
+                        <td>${data.participation}</td>
+                        <td>${data.behavior}</td>
+                    </tr>
+                `;
+            });
+
+            const reportHtml = `
+                <html>
+                <head>
+                    <title>كشف متابعة: ${lessonTitle}</title>
+                    <meta charset="UTF-8">
+                    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Tajawal', sans-serif; direction: rtl; padding: 20px; }
+                        .report-container { border: 2px solid #333; padding: 20px; border-radius: 10px; max-width: 800px; margin: auto; }
+                        .header, .footer { text-align: center; margin-bottom: 20px; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+                        th { background-color: #f2f2f2; }
+                        td:first-child, td:last-child { text-align: right; }
+                        .footer p { margin: 5px 0; }
+                    </style>
+                </head>
+                <body>
+                    <div class="report-container">
+                        <div class="header">
+                            <h2>كشف متابعة الحصة</h2>
+                            <h3>${lessonTitle}</h3>
+                            <p><strong>الصف:</strong> ${classId} | <strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-SA')}</p>
+                            <p><strong>المعلم:</strong> محمد مجممي</p>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>اسم الطالب</th>
+                                    <th>الحضور</th>
+                                    <th>المشاركة (عدد)</th>
+                                    <th>السلوك (ملاحظات)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tableRows}
+                            </tbody>
+                        </table>
+                        <div class="footer">
+                            <p><strong>مدير المدرسة</strong></p>
+                            <p>فهد القحطاني</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([reportHtml], { type: 'text/html;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `كشف_متابعة_${lessonTitle}_فصل_${classId}.html`;
+            link.click();
+        }
+
+        // --- QUIZZES & ACTIVITIES ---
+        function checkAnswer(quizId, correctAnswer, radioName) {
+            const quizContainer = document.getElementById(quizId);
+            const selectedOption = quizContainer.querySelector(`input[name="${radioName}"]:checked`);
+            const feedbackEl = quizContainer.querySelector('.quiz-feedback');
+
+            if (!selectedOption) {
+                feedbackEl.textContent = 'الرجاء اختيار إجابة.';
+                feedbackEl.className = 'quiz-feedback incorrect';
+                feedbackEl.style.display = 'block';
+                return;
+            }
+
+            if (selectedOption.value === correctAnswer) {
+                feedbackEl.textContent = 'إجابة صحيحة! أحسنت.';
+                feedbackEl.className = 'quiz-feedback correct';
+            } else {
+                feedbackEl.textContent = 'إجابة خاطئة. حاول مرة أخرى.';
+                feedbackEl.className = 'quiz-feedback incorrect';
+            }
+            feedbackEl.style.display = 'block';
+        }
+
+        function toggleTrackItem(element) {
+            document.querySelectorAll('.track-item.active').forEach(item => {
+                if (item !== element) {
+                    item.classList.remove('active');
+                }
+            });
+            element.classList.toggle('active');
+        }
+
+        // --- GAME ---
+        function initializeGame() {
+            const concepts = document.querySelectorAll('#concepts .game-item');
+            const definitions = document.querySelectorAll('#definitions .game-item');
+
+            concepts.forEach(c => c.addEventListener('click', () => selectGameItem(c, 'concept')));
+            definitions.forEach(d => d.addEventListener('click', () => selectGameItem(d, 'definition')));
+        }
+
+        function selectGameItem(item, type) {
+            if (item.classList.contains('correct')) return;
+
+            const columnId = type === 'concept' ? 'concepts' : 'definitions';
+            document.querySelectorAll(`#${columnId} .game-item`).forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+
+            if (type === 'concept') {
+                appState.game.selectedConcept = item;
+            } else {
+                appState.game.selectedDefinition = item;
+            }
+
+            checkForMatch();
+        }
+        
+        function checkForMatch() {
+            const { selectedConcept, selectedDefinition } = appState.game;
+            const feedback = document.getElementById('game-feedback');
+            
+            if (selectedConcept && selectedDefinition) {
+                if (selectedConcept.dataset.match === selectedDefinition.dataset.match) {
+                    selectedConcept.classList.add('correct');
+                    selectedDefinition.classList.add('correct');
+                    selectedConcept.classList.remove('selected');
+                    selectedDefinition.classList.remove('selected');
+                    feedback.textContent = 'توصيل صحيح!';
+                    feedback.style.color = 'var(--success-color)';
+                    appState.game.correctPairs++;
+                } else {
+                    feedback.textContent = 'حاول مرة أخرى!';
+                    feedback.style.color = 'var(--accent-color)';
+                }
+                
+                appState.game.selectedConcept = null;
+                appState.game.selectedDefinition = null;
+                setTimeout(() => {
+                    document.querySelectorAll('.game-item:not(.correct)').forEach(i => i.classList.remove('selected'));
+                    if (feedback.textContent !== 'توصيل صحيح!') feedback.textContent = '';
+                }, 1000);
+
+                if (appState.game.correctPairs === appState.game.totalPairs) {
+                     feedback.textContent = 'ممتاز! لقد أكملت اللعبة بنجاح.';
+                }
+            }
+        }
+
+        // --- REPORTING ---
+        function generateReport() {
+            const classId = appState.currentClass;
+            const followupData = appState.followup[classId] || {};
+
+            // Session Details
+            const sessionTable = document.getElementById('session-details-table');
+            sessionTable.innerHTML = `
+                <tr><th>البند</th><th>التفاصيل</th></tr>
+                <tr><td>تاريخ اليوم</td><td>${new Date().toLocaleDateString('ar-SA')}</td></tr>
+                <tr><td>الفصل</td><td>${classId}</td></tr>
+                <tr><td>الاستراتيجية المستخدمة</td><td>${document.getElementById('strategy-select').value}</td></tr>
+                <tr><td>مدة الحصة</td><td>${document.getElementById('timer-display').textContent}</td></tr>
+            `;
+
+            // Medals
+            const medalsTable = document.getElementById('medals-report-table');
+            let medalsHtml = '<tr><th>الطالب</th><th>الميدالية</th><th>القسم</th></tr>';
+            const classMedals = appState.medals.filter(m => m.classId === classId);
+            if(classMedals.length > 0) {
+                classMedals.forEach(medal => {
+                    const medalIcon = medal.medal === 'gold' ? '🥇 ذهبية' : medal.medal === 'silver' ? '🥈 فضية' : '🥉 برونزية';
+                    const sectionTitle = document.querySelector(`li[data-page="${medal.section}"]`).textContent;
+                    medalsHtml += `<tr><td>${medal.studentName}</td><td>${medalIcon}</td><td>${sectionTitle}</td></tr>`;
+                });
+            } else {
+                 medalsHtml += `<tr><td colspan="3">لم يتم منح أي ميداليات خلال هذه الحصة.</td></tr>`;
+            }
+            medalsTable.innerHTML = medalsHtml;
+
+            // Follow-up Summary
+            const summaryTable = document.getElementById('followup-summary-table');
+            const totalStudents = appState.students[classId]?.length || 0;
+            const presentStudents = Object.values(followupData).filter(s => s.attendance === 'checked').length;
+            const absentStudents = Object.values(followupData).filter(s => s.attendance === 'crossed').length;
+            const participatingStudents = Object.values(followupData).filter(s => s.participation > 0).length;
+            
+            summaryTable.innerHTML = `
+                <tr><th>الإحصائية</th><th>العدد</th></tr>
+                <tr><td>إجمالي الطلاب</td><td>${totalStudents}</td></tr>
+                <tr><td>الطلاب الحاضرون</td><td>${presentStudents}</td></tr>
+                <tr><td>الطلاب الغائبون</td><td>${absentStudents}</td></tr>
+                <tr><td>الطلاب المشاركون</td><td>${participatingStudents}</td></tr>
+            `;
+        }
+        
+        function exportReport() {
+            const reportContent = document.getElementById('report-content').innerHTML;
+            const reportWindow = window.open('', '', 'width=800,height=600');
+            reportWindow.document.write(`
+                <html>
+                <head>
+                    <title>التقرير الاحترافي للحصة: ${document.getElementById('lesson-title').textContent}</title>
+                    <meta charset="UTF-8">
+                    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Tajawal', sans-serif; direction: rtl; padding: 20px; color: #333; }
+                        h1, h3 { color: #2c3e50; }
+                        h1 { text-align: center; }
+                        h3 { border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-top: 30px;}
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 1.1em; }
+                        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+                        th { background-color: #2c3e50; color: white; }
+                        tbody tr:nth-of-type(even) { background-color: #f9f9f9; }
+                        ul, ol { padding-right: 20px; }
+                        .report-section { page-break-inside: avoid; }
+                    </style>
+                </head>
+                <body>
+                    <h1>التقرير الاحترافي للحصة: ${document.getElementById('lesson-title').textContent}</h1>
+                    ${reportContent}
+                </body>
+                </html>
+            `);
+            reportWindow.document.close();
+            reportWindow.print();
+        }
+
+    </script>
+</body>
+</html>
