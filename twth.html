@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شرح تفاعلي: التقييم والتوثيق في دورة حياة النظام</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The SPA is designed with a tab-based navigation for the two core topics: "Evaluation" and "Documentation". This structure was chosen because the source material presents two distinct but related, continuous processes. A tabbed view allows the user to focus on one concept at a time while easily switching to the other for comparison, enhancing comprehension. The flow is: User lands -> sees overview -> selects a topic -> explores its details (importance, participants) -> engages with an interactive scenario to test understanding. This is more user-friendly than a long scroll, as it organizes content into digestible, user-controlled sections. An interactive simulation has been added to provide a hands-on demonstration of the concepts. -->
+    <!-- Visualization & Content Choices: 
+    - Report Info: Core concepts of Evaluation & Documentation -> Goal: Inform/Organize -> Presentation: Thematic sections toggled by buttons -> Interaction: Click to switch views -> Justification: Breaks down complex info into manageable parts, preventing cognitive overload. -> Method: HTML/Tailwind/JS.
+    - Report Info: Key points (why it's important, participants) -> Goal: Highlight Details -> Presentation: Styled lists with Unicode icons -> Interaction: None -> Justification: Visually separates key takeaways for better retention than plain text. -> Method: HTML/Tailwind.
+    - Report Info: Interactive scenarios/questions -> Goal: Engage/Test Understanding -> Presentation: Question and a hidden answer revealed by a button -> Interaction: Click to toggle answer visibility -> Justification: Mimics the source's interactive nature, promoting active learning over passive reading. -> Method: JS event listeners.
+    - Report Info: SDLC Process -> Goal: Show Context/Relationships -> Presentation: A simplified visual flow diagram -> Interaction: Hover to highlight stages -> Justification: Provides a high-level map showing that Evaluation and Documentation are continuous, not isolated steps. -> Method: HTML/Tailwind styled divs.
+    - Report Info: Step-by-step simulation -> Goal: Demonstrate Process -> Presentation: Interactive stage buttons and log areas -> Interaction: Click a stage to populate logs -> Justification: Actively demonstrates how evaluation and documentation occur at each SDLC phase. -> Method: HTML/Tailwind/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', 'Almarai', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .tab-btn {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-btn.active {
+            border-color: #D6A354;
+            color: #C18C3B;
+            font-weight: 600;
+        }
+        .scenario-card {
+            background-color: #FFFBF5;
+            border-left: 4px solid #D6A354;
+        }
+        .answer {
+            transition: all 0.5s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .answer.show {
+            max-height: 500px;
+        }
+        .sdlc-stage {
+            transition: all 0.3s ease;
+            border: 1px solid #EAEAEA;
+        }
+        .sdlc-stage:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-color: #D6A354;
+        }
+        .sdlc-connector {
+            flex-grow: 1;
+            height: 2px;
+            background-color: #E0E0E0;
+        }
+        .continuous-process {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            background-color: #C18C3B;
+            color: white;
+            transform: rotate(180deg);
+            padding: 8px 4px;
+            border-radius: 8px 0 0 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .log-area {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 1rem;
+            height: 220px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        .log-area p {
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+        .log-area p:last-child {
+            border-bottom: none;
+        }
+        .sim-stage-btn {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">دورة حياة النظام</h1>
+            <p class="text-lg text-gray-500">مرحلتان أساسيتان لضمان نجاح أي مشروع: التقييم والتوثيق</p>
+        </header>
+
+        <div class="w-full bg-white p-4 rounded-xl shadow-md mb-8">
+            <h3 class="text-center text-lg font-semibold text-gray-700 mb-4">مكانة التقييم والتوثيق في دورة حياة النظام</h3>
+            <div class="flex items-center">
+                 <div class="continuous-process">التقييم</div>
+                <div class="flex flex-col md:flex-row items-center justify-between w-full p-2">
+                    <div class="sdlc-stage p-3 rounded-lg text-center bg-gray-50 flex-1 m-1">التحليل</div>
+                    <div class="sdlc-connector hidden md:block"></div>
+                    <div class="sdlc-stage p-3 rounded-lg text-center bg-gray-50 flex-1 m-1">التصميم</div>
+                    <div class="sdlc-connector hidden md:block"></div>
+                    <div class="sdlc-stage p-3 rounded-lg text-center bg-gray-50 flex-1 m-1">التطوير</div>
+                    <div class="sdlc-connector hidden md:block"></div>
+                    <div class="sdlc-stage p-3 rounded-lg text-center bg-gray-50 flex-1 m-1">الاختبار</div>
+                    <div class="sdlc-connector hidden md:block"></div>
+                    <div class="sdlc-stage p-3 rounded-lg text-center bg-gray-50 flex-1 m-1">التنفيذ</div>
+                    <div class="sdlc-connector hidden md:block"></div>
+                    <div class="sdlc-stage p-3 rounded-lg text-center bg-gray-50 flex-1 m-1">الصيانة</div>
+                </div>
+                 <div class="continuous-process" style="border-radius: 0 8px 8px 0;">التوثيق</div>
+            </div>
+             <p class="text-center text-sm text-gray-500 mt-3">التقييم والتوثيق عمليتان مستمرتان ترافقان جميع مراحل النظام لضمان جودته واستدامته.</p>
+        </div>
+
+
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+            <nav class="flex justify-center border-b border-gray-200 mb-8">
+                <button id="eval-btn" class="tab-btn active text-lg py-3 px-6">التقييم (Evaluation)</button>
+                <button id="doc-btn" class="tab-btn text-lg py-3 px-6">التوثيق (Documentation)</button>
+            </nav>
+
+            <main>
+                <!-- Evaluation Section -->
+                <div id="evaluation-content">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-4">لماذا التقييم مهم؟</h2>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mt-1 mr-2">✔</span>
+                                    <span>**اكتشاف الأخطاء مبكراً:** اكتشاف مشكلة في مرحلة التصميم أسهل وأقل تكلفة من اكتشافها بعد إطلاق النظام.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mt-1 mr-2">✔</span>
+                                    <span>**ضمان الجودة:** التأكد من أن النظام يلبي متطلبات المستخدمين ويعمل بكفاءة.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mt-1 mr-2">✔</span>
+                                    <span>**تحقيق الأهداف:** التحقق من أن النظام مناسب للمهمة التي صُنع من أجلها.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-4">من يشارك في التقييم؟</h2>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="text-blue-500 mt-1 mr-2">●</span>
+                                    <span>**فريق تقنية المعلومات:** المطورون والمحللون الذين يتأكدون من الجوانب التقنية.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-blue-500 mt-1 mr-2">●</span>
+                                    <span>**المستخدمون:** الأشخاص الذين سيستخدمون النظام ويقدمون ملاحظات حول سهولة الاستخدام وفائدته.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-blue-500 mt-1 mr-2">●</span>
+                                    <span>**الإدارة:** للتأكد من أن النظام يحقق أهداف العمل ويتوافق مع الميزانية والوقت.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-10 scenario-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">سيناريو تفاعلي: لنختبر فهمك!</h3>
+                        <p class="mb-4">تخيل أنك جزء من فريق يعمل على تطوير تطبيق لطلب الطعام. بعد إطلاق التطبيق، اشتكى العديد من المستخدمين من أن خاصية "تتبع الطلب" لا تعمل بشكل صحيح.</p>
+                        <p class="font-semibold text-gray-700 mb-4">السؤال: في أي مرحلة كان يجب اكتشاف هذه المشكلة ومنعها من الوصول للمستخدم النهائي؟</p>
+                        <button class="reveal-btn bg-[#C18C3B] text-white py-2 px-4 rounded-md hover:bg-[#D6A354] transition-colors">اضغط هنا لرؤية الجواب</button>
+                        <div class="answer mt-4 text-gray-600 bg-gray-50 p-4 rounded-md">
+                            <p>كان يجب اكتشاف هذه المشكلة في مرحلة **"التطوير والاختبار"**. خلال هذه المرحلة، يتم اختبار كل وظائف النظام (مثل تتبع الطلب) بشكل شامل للتأكد من أنها تعمل كما هو متوقع قبل مرحلة التنفيذ النهائية.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documentation Section -->
+                <div id="documentation-content" class="hidden">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-4">لماذا التوثيق مهم؟</h2>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mt-1 mr-2">✔</span>
+                                    <span>**مرجع أساسي:** يساعد أي شخص جديد ينضم للفريق على فهم كيفية عمل النظام بسرعة.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mt-1 mr-2">✔</span>
+                                    <span>**سهولة الصيانة:** عند حدوث خطأ، يسهل التوثيق على المبرمجين تحديد مكانه وإصلاحه.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mt-1 mr-2">✔</span>
+                                    <span>**التطوير المستقبلي:** يوفر أساساً متيناً لإضافة ميزات جديدة أو إجراء تحسينات على النظام.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-4">ما الذي يتم توثيقه؟</h2>
+                            <ul class="space-y-3">
+                                <li class="flex items-start"><span class="text-blue-500 mt-1 mr-2">●</span><span>**متطلبات المستخدمين:** (في مرحلة التحليل).</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mt-1 mr-2">●</span><span>**تصميم النظام:** (في مرحلة التصميم).</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mt-1 mr-2">●</span><span>**التعليمات البرمجية (الكود):** (في مرحلة التطوير).</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mt-1 mr-2">●</span><span>**نتائج الاختبار:** (في مرحلة الاختبار).</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mt-1 mr-2">●</span><span>**دليل المستخدم:** (في مرحلة التنفيذ).</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-10 scenario-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">سيناريو تفاعلي: لنختبر فهمك مرة أخرى!</h3>
+                        <p class="mb-4">مبرمج جديد انضم إلى فريقك، ومهمته هي تحديث نظام الدفع في تطبيقكم. ليبدأ عمله بفعالية، يحتاج إلى فهم كيفية تدفق البيانات بين واجهة المستخدم وقاعدة البيانات عند إجراء عملية دفع.</p>
+                        <p class="font-semibold text-gray-700 mb-4">السؤال: ما هو المستند الذي سيساعده أكثر من غيره في فهم هذه العملية؟</p>
+                        <button class="reveal-btn bg-[#C18C3B] text-white py-2 px-4 rounded-md hover:bg-[#D6A354] transition-colors">اضغط هنا لرؤية الجواب</button>
+                        <div class="answer mt-4 text-gray-600 bg-gray-50 p-4 rounded-md">
+                             <p>أفضل مستند لمساعدته هو **"وثيقة تصميم النظام"**. هذه الوثيقة تحتوي على تفاصيل دقيقة حول هيكلية النظام، وكيفية تفاعل مكوناته مع بعضها البعض، وتدفق البيانات، وهو تمامًا ما يحتاجه لفهم آلية عمل نظام الدفع.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Interactive Simulation Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 mt-8">
+            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-2">محاكاة تفاعلية: التقييم والتوثيق خطوة بخطوة</h2>
+            <p class="text-center text-gray-500 mb-8">انقر على كل مرحلة من مراحل دورة حياة النظام لترى كيف تتم عمليات التقييم والتوثيق بشكل مستمر.</p>
+            
+            <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                <button class="sim-stage-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300" data-stage="analysis">التحليل</button>
+                <button class="sim-stage-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300" data-stage="design">التصميم</button>
+                <button class="sim-stage-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300" data-stage="development">التطوير</button>
+                <button class="sim-stage-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300" data-stage="testing">الاختبار</button>
+                <button class="sim-stage-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300" data-stage="implementation">التنفيذ</button>
+                <button class="sim-stage-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300" data-stage="maintenance">الصيانة</button>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold mb-2 text-center text-gray-700">سجل التقييم 📝</h3>
+                    <div id="evaluation-log" class="log-area"><p class="text-gray-400">السجل فارغ. ابدأ بالنقر على مرحلة أعلاه.</p></div>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2 text-center text-gray-700">سجل التوثيق 📂</h3>
+                    <div id="documentation-log" class="log-area"><p class="text-gray-400">السجل فارغ. ابدأ بالنقر على مرحلة أعلاه.</p></div>
+                </div>
+            </div>
+
+            <div class="text-center mt-8">
+                <button id="reset-sim-btn" class="bg-red-500 text-white py-2 px-5 rounded-md hover:bg-red-600 transition-colors">إعادة المحاكاة</button>
+            </div>
+        </div>
+
+        <footer class="text-center mt-12">
+            <p class="text-gray-500">معلمة المادة: مشاعل الثبيتي</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tab navigation logic
+            const evalBtn = document.getElementById('eval-btn');
+            const docBtn = document.getElementById('doc-btn');
+            const evalContent = document.getElementById('evaluation-content');
+            const docContent = document.getElementById('documentation-content');
+            const revealBtns = document.querySelectorAll('.reveal-btn');
+
+            function setActiveTab(activeBtn, activeContent) {
+                evalBtn.classList.remove('active');
+                docBtn.classList.remove('active');
+                activeBtn.classList.add('active');
+                
+                evalContent.classList.add('hidden');
+                docContent.classList.add('hidden');
+                activeContent.classList.remove('hidden');
+            }
+
+            evalBtn.addEventListener('click', () => setActiveTab(evalBtn, evalContent));
+            docBtn.addEventListener('click', () => setActiveTab(docBtn, docContent));
+            revealBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.nextElementSibling.classList.toggle('show');
+                });
+            });
+
+            // Interactive simulation logic
+            const simStageBtns = document.querySelectorAll('.sim-stage-btn');
+            const evalLog = document.getElementById('evaluation-log');
+            const docLog = document.getElementById('documentation-log');
+            const resetSimBtn = document.getElementById('reset-sim-btn');
+            
+            const initialLogHtml = '<p class="text-gray-400">السجل فارغ. ابدأ بالنقر على مرحلة أعلاه.</p>';
+
+            const logMessages = {
+                analysis: {
+                    eval: 'تقييم جدوى ومتطلبات المشروع والتأكد من وضوحها.',
+                    doc: 'توثيق متطلبات المستخدمين والنظام في وثيقة المتطلبات.'
+                },
+                design: {
+                    eval: 'مراجعة تصميم الواجهات وهيكلة البيانات مع أصحاب المصلحة.',
+                    doc: 'إنشاء وثيقة تصميم النظام المفصلة (System Design Document).'
+                },
+                development: {
+                    eval: 'تقييم جودة الكود المكتوب ومطابقته للمعايير.',
+                    doc: 'إضافة تعليقات توضيحية داخل الكود البرمجي.'
+                },
+                testing: {
+                    eval: 'تقييم نتائج الاختبارات والتأكد من تغطيتها لكل الحالات.',
+                    doc: 'توثيق حالات الاختبار والنتائج والأخطاء التي تم العثور عليها.'
+                },
+                implementation: {
+                    eval: 'تقييم عملية نشر النظام وجمع الملاحظات الأولية من المستخدمين.',
+                    doc: 'إعداد دليل المستخدم النهائي ودليل تثبيت النظام.'
+                },
+                maintenance: {
+                    eval: 'تقييم أداء النظام بعد الإطلاق ومعالجة أي مشاكل تظهر.',
+                    doc: 'تسجيل جميع التغييرات والتحديثات في سجل الصيانة.'
+                }
+            };
+            
+            let logsInitialized = false;
+
+            function addLogEntry(logElement, text) {
+                if (!logsInitialized) {
+                    evalLog.innerHTML = '';
+                    docLog.innerHTML = '';
+                    logsInitialized = true;
+                }
+                const entry = document.createElement('p');
+                entry.textContent = text;
+                logElement.appendChild(entry);
+                logElement.scrollTop = logElement.scrollHeight;
+            }
+
+            simStageBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const stageKey = btn.dataset.stage;
+                    const stageName = btn.textContent;
+                    
+                    if (logMessages[stageKey]) {
+                        addLogEntry(evalLog, `[${stageName}]: ${logMessages[stageKey].eval}`);
+                        addLogEntry(docLog, `[${stageName}]: ${logMessages[stageKey].doc}`);
+                        
+                        btn.disabled = true;
+                        btn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-green-200');
+                        btn.classList.remove('hover:bg-gray-300');
+                    }
+                });
+            });
+
+            resetSimBtn.addEventListener('click', () => {
+                evalLog.innerHTML = initialLogHtml;
+                docLog.innerHTML = initialLogHtml;
+                logsInitialized = false;
+                
+                simStageBtns.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-green-200');
+                    btn.classList.add('hover:bg-gray-300');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
