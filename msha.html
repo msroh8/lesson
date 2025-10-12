@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أنشطة تفاعلية: دورة حياة النظام</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .main-container {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom: 4px solid transparent;
+        }
+        .tab-button.active {
+            color: #2563eb; /* A nice blue color */
+            border-bottom-color: #2563eb;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .draggable {
+            cursor: move;
+            user-select: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .draggable:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .drop-zone {
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            border: 2px dashed #cbd5e1;
+            min-height: 80px;
+        }
+        .drop-zone.drag-over {
+            background-color: #e0f2fe;
+            border-color: #3b82f6;
+        }
+        .feedback-message {
+            display: none;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .correct {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #4ade80;
+        }
+        .incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #f87171;
+        }
+        /* Styles for Bar Chart */
+        .chart-bar {
+            transition: width 0.8s ease-in-out;
+        }
+        .chart-label {
+            width: 150px; /* Fixed width for labels */
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="main-container max-w-5xl mx-auto p-4 sm:p-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">دورة حياة النظام</h1>
+            <p class="text-gray-500 mt-2">أنشطة تفاعلية لتعزيز الفهم</p>
+        </header>
+
+        <!-- Tabs Navigation -->
+        <div class="border-b border-gray-200 mb-6">
+            <nav class="flex flex-wrap -mb-px justify-center gap-x-4" id="tab-nav">
+                <button class="tab-button active py-4 px-2 md:px-4 text-sm sm:text-base font-medium text-gray-500 hover:text-blue-600" data-tab="1">1. ترتيب المراحل</button>
+                <button class="tab-button py-4 px-2 md:px-4 text-sm sm:text-base font-medium text-gray-500 hover:text-blue-600" data-tab="2">2. صل المهام بالمراحل</button>
+                <button class="tab-button py-4 px-2 md:px-4 text-sm sm:text-base font-medium text-gray-500 hover:text-blue-600" data-tab="3">3. تصنيف المتطلبات</button>
+                <button class="tab-button py-4 px-2 md:px-4 text-sm sm:text-base font-medium text-gray-500 hover:text-blue-600" data-tab="4">4. اختر الطريقة الأنسب</button>
+                <button class="tab-button py-4 px-2 md:px-4 text-sm sm:text-base font-medium text-gray-500 hover:text-blue-600" data-tab="5">5. مقارنة طرق الجمع</button>
+                <button class="tab-button py-4 px-2 md:px-4 text-sm sm:text-base font-medium text-gray-500 hover:text-blue-600" data-tab="6">6. عجلة الاختيار</button>
+            </nav>
+        </div>
+
+        <!-- Tabs Content -->
+        <div id="tab-contents">
+            <!-- Activity 1: Order the Stages -->
+            <div id="tab-1" class="tab-content active p-4">
+                <h2 class="text-xl font-bold mb-2 text-gray-700">النشاط الأول: ترتيب مراحل دورة حياة النظام</h2>
+                <p class="text-gray-600 mb-6">اسحب كل مرحلة إلى مكانها الصحيح في الدورة.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-semibold mb-3 text-center text-gray-800">المراحل (اسحب من هنا)</h3>
+                        <div id="source-stages" class="flex flex-wrap justify-center gap-3 p-4 bg-gray-100 rounded-lg">
+                            <div id="stage-4" class="draggable bg-white p-4 rounded-lg shadow-sm border" draggable="true" data-order="4">4. التنفيذ</div>
+                            <div id="stage-1" class="draggable bg-white p-4 rounded-lg shadow-sm border" draggable="true" data-order="1">1. التحليل</div>
+                            <div id="stage-5" class="draggable bg-white p-4 rounded-lg shadow-sm border" draggable="true" data-order="5">5. الصيانة</div>
+                            <div id="stage-3" class="draggable bg-white p-4 rounded-lg shadow-sm border" draggable="true" data-order="3">3. التطوير والاختبار</div>
+                            <div id="stage-2" class="draggable bg-white p-4 rounded-lg shadow-sm border" draggable="true" data-order="2">2. التصميم</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-3 text-center text-gray-800">الترتيب الصحيح (ضع هنا)</h3>
+                        <div id="target-stages" class="space-y-3">
+                            <div class="drop-zone p-4 rounded-lg flex items-center justify-center" data-order="1">المرحلة الأولى</div>
+                            <div class="drop-zone p-4 rounded-lg flex items-center justify-center" data-order="2">المرحلة الثانية</div>
+                            <div class="drop-zone p-4 rounded-lg flex items-center justify-center" data-order="3">المرحلة الثالثة</div>
+                            <div class="drop-zone p-4 rounded-lg flex items-center justify-center" data-order="4">المرحلة الرابعة</div>
+                            <div class="drop-zone p-4 rounded-lg flex items-center justify-center" data-order="5">المرحلة الخامسة</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <button id="check-activity1" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition">تحقق من الإجابة</button>
+                    <button id="reset-activity1" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition ml-2">إعادة</button>
+                </div>
+                <div id="feedback-activity1" class="feedback-message"></div>
+            </div>
+
+            <!-- Activity 2: Match Tasks to Stages -->
+            <div id="tab-2" class="tab-content p-4">
+                <h2 class="text-xl font-bold mb-2 text-gray-700">النشاط الثاني: صل المهام بالمراحل</h2>
+                <p class="text-gray-600 mb-6">اسحب كل مهمة وضعها تحت المرحلة المناسبة لها.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Categories -->
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-lg text-blue-800 text-center mb-4">التحليل</h3>
+                        <div class="drop-zone space-y-2 p-2 rounded-md" data-category="analysis"></div>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-lg text-green-800 text-center mb-4">التصميم</h3>
+                        <div class="drop-zone space-y-2 p-2 rounded-md" data-category="design"></div>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-lg text-yellow-800 text-center mb-4">التطوير والاختبار</h3>
+                        <div class="drop-zone space-y-2 p-2 rounded-md" data-category="development"></div>
+                    </div>
+                </div>
+                <!-- Draggable Tasks -->
+                <div id="source-tasks" class="flex flex-wrap justify-center gap-3 p-4 bg-gray-100 rounded-lg mt-6">
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-category="design">تصميم واجهة المستخدم</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-category="development">كتابة الشيفرة البرمجية</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-category="analysis">إجراء مقابلات مع المستخدمين</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-category="development">اختبار صحة البيانات المدخلة</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-category="analysis">تحديد المشكلة والمتطلبات</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-category="design">تحديد هياكل البيانات</div>
+                </div>
+                <div class="text-center mt-6">
+                    <button id="check-activity2" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition">تحقق من الإجابة</button>
+                    <button id="reset-activity2" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition ml-2">إعادة</button>
+                </div>
+                 <div id="feedback-activity2" class="feedback-message"></div>
+            </div>
+
+            <!-- Activity 3: Classify Requirements -->
+            <div id="tab-3" class="tab-content p-4">
+                 <h2 class="text-xl font-bold mb-2 text-gray-700">النشاط الثالث: تصنيف المتطلبات</h2>
+                <p class="text-gray-600 mb-6">صنّف المتطلبات التالية إلى وظيفية وغير وظيفية بسحبها إلى العمود المناسب.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Categories -->
+                    <div class="bg-indigo-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-lg text-indigo-800 text-center mb-4">متطلبات وظيفية</h3>
+                        <div class="drop-zone space-y-2 p-2 rounded-md" data-req="functional"></div>
+                    </div>
+                    <div class="bg-pink-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-lg text-pink-800 text-center mb-4">متطلبات غير وظيفية</h3>
+                        <div class="drop-zone space-y-2 p-2 rounded-md" data-req="non-functional"></div>
+                    </div>
+                </div>
+                 <!-- Draggable Requirements -->
+                <div id="source-reqs" class="flex flex-wrap justify-center gap-3 p-4 bg-gray-100 rounded-lg mt-6">
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-req="non-functional">عمل النظام بفاعلية مع 10 آلاف مستخدم</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-req="functional">إمكانية البحث في محتويات النظام</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-req="functional">إصدار التقارير وطباعتها</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-req="non-functional">سهولة صيانة النظام وأمانه</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-req="functional">إظهار رسائل تنبيه للمستخدم</div>
+                    <div class="draggable bg-white p-3 rounded-lg shadow-sm border text-sm" draggable="true" data-req="non-functional">قدرة النظام على استرجاع البيانات بعد انقطاع الطاقة</div>
+                </div>
+                <div class="text-center mt-6">
+                    <button id="check-activity3" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition">تحقق من الإجابة</button>
+                    <button id="reset-activity3" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300 transition ml-2">إعادة</button>
+                </div>
+                <div id="feedback-activity3" class="feedback-message"></div>
+            </div>
+
+            <!-- Activity 4: Choose the Best Method -->
+            <div id="tab-4" class="tab-content p-4">
+                 <h2 class="text-xl font-bold mb-2 text-gray-700">النشاط الرابع: اختر طريقة جمع البيانات الأنسب</h2>
+                <p class="text-gray-600 mb-6">اقرأ السيناريو التالي واختر الطريقة الأكثر فعالية لجمع المتطلبات.</p>
+                <div id="quiz-container" class="bg-gray-50 p-6 rounded-lg border">
+                    <p class="font-semibold text-lg mb-4 text-gray-800">تحتاج إلى جمع آراء حول ميزة جديدة في تطبيقك من مجموعة كبيرة جدًا من المستخدمين (أكثر من 500 مستخدم) المنتشرين في مناطق جغرافية مختلفة، وبأسرع وقت وأقل تكلفة ممكنة. ما هي أفضل طريقة لتحقيق ذلك؟</p>
+                    <div class="space-y-3">
+                        <label class="flex items-center p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="quiz-method" value="interviews" class="ml-3">
+                            <span>المقابلات الشخصية</span>
+                        </label>
+                        <label class="flex items-center p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="quiz-method" value="questionnaires" class="ml-3">
+                            <span>الاستبانات الإلكترونية</span>
+                        </label>
+                        <label class="flex items-center p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="quiz-method" value="observation" class="ml-3">
+                            <span>الملاحظة</span>
+                        </label>
+                         <label class="flex items-center p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="quiz-method" value="docs" class="ml-3">
+                            <span>فحص توثيقات النظام</span>
+                        </label>
+                    </div>
+                </div>
+                 <div class="text-center mt-6">
+                    <button id="check-activity4" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition">تأكيد الإجابة</button>
+                </div>
+                <div id="feedback-activity4" class="feedback-message"></div>
+            </div>
+
+            <!-- Activity 5: Compare Methods -->
+            <div id="tab-5" class="tab-content p-4">
+                <h2 class="text-xl font-bold mb-2 text-gray-700">النشاط الخامس: مقارنة بين طرق جمع البيانات</h2>
+                <p class="text-gray-600 mb-6">هذا رسم بياني يوضح مقارنة بين طرق جمع البيانات المختلفة بناءً على الوقت، التكلفة، ودقة البيانات (مرر الفأرة على الأعمدة لرؤية التقييم).</p>
+                <div id="chart-container" class="w-full bg-white p-6 rounded-lg shadow-md border space-y-6">
+                    <!-- Chart Legend -->
+                    <div class="flex justify-center flex-wrap gap-x-6 gap-y-2 text-sm">
+                        <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-blue-500 ml-2"></span>الوقت المستغرق</div>
+                        <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-500 ml-2"></span>التكلفة والجهد</div>
+                        <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-500 ml-2"></span>دقة وواقعية البيانات</div>
+                    </div>
+                    <div class="space-y-4 pt-4">
+                        <!-- Data Row 1: الاستبانات -->
+                        <div class="flex items-center">
+                            <div class="chart-label text-gray-700 font-medium pr-4 text-right">الاستبانات</div>
+                            <div class="flex-1 space-y-2">
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="الوقت: قليل"><div class="chart-bar bg-blue-500 h-4 rounded-full" style="width: 25%;"></div></div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="التكلفة: قليلة"><div class="chart-bar bg-red-500 h-4 rounded-full" style="width: 20%;"></div></div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="الدقة: متوسطة"><div class="chart-bar bg-green-500 h-4 rounded-full" style="width: 60%;"></div></div>
+                            </div>
+                        </div>
+                         <!-- Data Row 2: المقابلات -->
+                        <div class="flex items-center">
+                            <div class="chart-label text-gray-700 font-medium pr-4 text-right">المقابلات</div>
+                             <div class="flex-1 space-y-2">
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="الوقت: طويل"><div class="chart-bar bg-blue-500 h-4 rounded-full" style="width: 90%;"></div></div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="التكلفة: مرتفعة"><div class="chart-bar bg-red-500 h-4 rounded-full" style="width: 95%;"></div></div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="الدقة: عالية"><div class="chart-bar bg-green-500 h-4 rounded-full" style="width: 90%;"></div></div>
+                            </div>
+                        </div>
+                        <!-- Data Row 3: الملاحظة -->
+                        <div class="flex items-center">
+                            <div class="chart-label text-gray-700 font-medium pr-4 text-right">الملاحظة</div>
+                             <div class="flex-1 space-y-2">
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="الوقت: متوسط"><div class="chart-bar bg-blue-500 h-4 rounded-full" style="width: 65%;"></div></div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="التكلفة: محدودة"><div class="chart-bar bg-red-500 h-4 rounded-full" style="width: 40%;"></div></div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="الدقة: عالية"><div class="chart-bar bg-green-500 h-4 rounded-full" style="width: 85%;"></div></div>
+                            </div>
+                        </div>
+                        <!-- Data Row 4: فحص التوثيقات -->
+                        <div class="flex items-center">
+                            <div class="chart-label text-gray-700 font-medium pr-4 text-right">فحص التوثيقات</div>
+                             <div class="flex-1 space-y-2">
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="الوقت: قليل إلى متوسط"><div class="chart-bar bg-blue-500 h-4 rounded-full" style="width: 45%;"></div></div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="التكلفة: محدودة"><div class="chart-bar bg-red-500 h-4 rounded-full" style="width: 50%;"></div></div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative" title="الدقة: عالية جدًا (تعتمد على جودة الوثائق)"><div class="chart-bar bg-green-500 h-4 rounded-full" style="width: 95%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity 6: Spinning Wheel -->
+            <div id="tab-6" class="tab-content p-4 text-center">
+                <h2 class="text-xl font-bold mb-2 text-gray-700">النشاط السادس: عجلة الاختيار العشوائي</h2>
+                <p class="text-gray-600 mb-6">اضغطي على الزر لتدوير العجلة واختيار طالبة بشكل عشوائي للإجابة.</p>
+                
+                <div class="relative inline-block my-4">
+                    <div class="absolute top-[-20px] left-1/2 -ml-3 z-10" style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ef4444;"></div>
+                    <div id="wheel-container" class="w-80 h-80 md:w-96 md:h-96 mx-auto transition-transform duration-[4000ms] ease-out">
+                        <svg viewBox="0 0 100 100" id="wheel-svg">
+                            <defs>
+                                <path id="text-path-1" d="M 20 50 A 30 30 0 0 1 50 20"></path>
+                                <path id="text-path-2" d="M 50 20 A 30 30 0 0 1 80 50"></path>
+                                <path id="text-path-3" d="M 80 50 A 30 30 0 0 1 50 80"></path>
+                                <path id="text-path-4" d="M 50 80 A 30 30 0 0 1 20 50"></path>
+                            </defs>
+                            <g transform="rotate(-15, 50, 50)">
+                                <!-- Slices -->
+                                <circle r="50" cx="50" cy="50" fill="#e0f2fe"></circle>
+                                <path d="M 50 50 L 50 0 A 50 50 0 0 1 93.3 25 Z" fill="#dbeafe"></path>
+                                <path d="M 50 50 L 93.3 25 A 50 50 0 0 1 93.3 75 Z" fill="#e0f2fe"></path>
+                                <path d="M 50 50 L 93.3 75 A 50 50 0 0 1 50 100 Z" fill="#dbeafe"></path>
+                                <path d="M 50 50 L 50 100 A 50 50 0 0 1 6.7 75 Z" fill="#e0f2fe"></path>
+                                <path d="M 50 50 L 6.7 75 A 50 50 0 0 1 6.7 25 Z" fill="#dbeafe"></path>
+                                <path d="M 50 50 L 6.7 25 A 50 50 0 0 1 50 0 Z" fill="#e0f2fe"></path>
+                                
+                                <!-- Text -->
+                                <text font-size="7" fill="#1e3a8a" font-weight="bold"><textPath xlink:href="#text-path-1" startOffset="50%" text-anchor="middle">التحليل</textPath></text>
+                                <g transform="rotate(60, 50, 50)"><text font-size="7" fill="#1e3a8a" font-weight="bold"><textPath xlink:href="#text-path-1" startOffset="50%" text-anchor="middle">التصميم</textPath></text></g>
+                                <g transform="rotate(120, 50, 50)"><text font-size="7" fill="#1e3a8a" font-weight="bold"><textPath xlink:href="#text-path-1" startOffset="50%" text-anchor="middle">التطوير</textPath></text></g>
+                                <g transform="rotate(180, 50, 50)"><text font-size="7" fill="#1e3a8a" font-weight="bold"><textPath xlink:href="#text-path-1" startOffset="50%" text-anchor="middle">الاختبار</textPath></text></g>
+                                <g transform="rotate(240, 50, 50)"><text font-size="7" fill="#1e3a8a" font-weight="bold"><textPath xlink:href="#text-path-1" startOffset="50%" text-anchor="middle">التنفيذ</textPath></text></g>
+                                <g transform="rotate(300, 50, 50)"><text font-size="7" fill="#1e3a8a" font-weight="bold"><textPath xlink:href="#text-path-1" startOffset="50%" text-anchor="middle">الصيانة</textPath></text></g>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button id="spin-button" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition text-lg shadow-lg">ابدأ الدوران!</button>
+                </div>
+                <div id="student-name-result" class="mt-6 h-12 flex items-center justify-center">
+                    <p class="text-xl font-bold text-gray-800 bg-gray-100 p-4 rounded-lg invisible">الطالبة المختارة هي: ...</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-8 pt-6 border-t border-gray-200">
+            <p class="text-gray-500 text-sm">فكرة وتنفيذ معلمة المادة: مشاعل الثبيتي</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Tabs Logic ---
+            const tabNav = document.getElementById('tab-nav');
+            const tabContents = document.getElementById('tab-contents');
+
+            tabNav.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    const tabNumber = e.target.dataset.tab;
+
+                    // Update button styles
+                    tabNav.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    // Update content visibility
+                    tabContents.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    document.getElementById(`tab-${tabNumber}`).classList.add('active');
+                }
+            });
+
+            // --- Drag and Drop Logic ---
+            let draggedItem = null;
+
+            function handleDragStart(e) {
+                draggedItem = e.target;
+                setTimeout(() => {
+                    e.target.style.display = 'none';
+                }, 0);
+            }
+
+            function handleDragEnd(e) {
+                setTimeout(() => {
+                    if (draggedItem) {
+                        draggedItem.style.display = 'block';
+                        draggedItem = null;
+                    }
+                }, 0);
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+            }
+
+            function handleDragEnter(e) {
+                if (e.target.classList.contains('drop-zone')) {
+                    e.target.classList.add('drag-over');
+                }
+            }
+
+            function handleDragLeave(e) {
+                 if (e.target.classList.contains('drop-zone')) {
+                    e.target.classList.remove('drag-over');
+                }
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                if (e.target.classList.contains('drop-zone')) {
+                    e.target.classList.remove('drag-over');
+                    if (draggedItem) {
+                       // For activity 1, allow only one item per drop zone
+                        if(e.target.closest('#target-stages') && e.target.children.length > 0) {
+                            return; // Don't drop if zone is not empty
+                        }
+                        e.target.appendChild(draggedItem);
+                    }
+                }
+            }
+            
+            // --- General function to show feedback ---
+            function showFeedback(elementId, message, isCorrect) {
+                const feedbackEl = document.getElementById(elementId);
+                feedbackEl.textContent = message;
+                feedbackEl.style.display = 'block';
+                feedbackEl.classList.remove('correct', 'incorrect');
+                feedbackEl.classList.add(isCorrect ? 'correct' : 'incorrect');
+            }
+
+            // --- Activity 1: Order Stages ---
+            const sourceStages = document.getElementById('source-stages');
+            const targetStages = document.getElementById('target-stages');
+            
+            // Initial state for reset
+            const initialActivity1HTML = {
+                source: sourceStages.innerHTML,
+                target: targetStages.innerHTML
+            };
+            
+            document.getElementById('check-activity1').addEventListener('click', () => {
+                let isCorrect = true;
+                const dropZones = targetStages.querySelectorAll('.drop-zone');
+                if (dropZones.length !== 5 || Array.from(dropZones).some(dz => dz.children.length === 0)) {
+                    showFeedback('feedback-activity1', 'الرجاء إكمال الترتيب أولاً.', false);
+                    return;
+                }
+                
+                dropZones.forEach(zone => {
+                    const droppedStage = zone.querySelector('.draggable');
+                    if (!droppedStage || droppedStage.dataset.order !== zone.dataset.order) {
+                        isCorrect = false;
+                    }
+                });
+                
+                if (isCorrect) {
+                    showFeedback('feedback-activity1', 'أحسنت! الترتيب صحيح.', true);
+                } else {
+                    showFeedback('feedback-activity1', 'للأسف، الترتيب غير صحيح. حاول مرة أخرى.', false);
+                }
+            });
+
+            document.getElementById('reset-activity1').addEventListener('click', () => {
+                sourceStages.innerHTML = initialActivity1HTML.source;
+                targetStages.innerHTML = initialActivity1HTML.target;
+                document.getElementById('feedback-activity1').style.display = 'none';
+            });
+            
+            // --- Activity 2: Match Tasks ---
+            const sourceTasks = document.getElementById('source-tasks');
+            const initialActivity2HTML = sourceTasks.innerHTML;
+            const dropZones2 = document.querySelectorAll('#tab-2 .drop-zone');
+
+            document.getElementById('check-activity2').addEventListener('click', () => {
+                let allItemsPlaced = sourceTasks.children.length === 0;
+                if (!allItemsPlaced) {
+                     showFeedback('feedback-activity2', 'الرجاء تصنيف جميع المهام أولاً.', false);
+                     return;
+                }
+
+                let isCorrect = true;
+                dropZones2.forEach(zone => {
+                    const category = zone.dataset.category;
+                    zone.querySelectorAll('.draggable').forEach(task => {
+                        if (task.dataset.category !== category) {
+                            isCorrect = false;
+                        }
+                    });
+                });
+                
+                if (isCorrect) {
+                    showFeedback('feedback-activity2', 'ممتاز! جميع التصنيفات صحيحة.', true);
+                } else {
+                    showFeedback('feedback-activity2', 'هناك خطأ في بعض التصنيفات. حاول مرة أخرى.', false);
+                }
+            });
+            
+             document.getElementById('reset-activity2').addEventListener('click', () => {
+                sourceTasks.innerHTML = initialActivity2HTML;
+                dropZones2.forEach(zone => zone.innerHTML = '');
+                document.getElementById('feedback-activity2').style.display = 'none';
+            });
+
+            // --- Activity 3: Classify Requirements ---
+             const sourceReqs = document.getElementById('source-reqs');
+             const initialActivity3HTML = sourceReqs.innerHTML;
+             const dropZones3 = document.querySelectorAll('#tab-3 .drop-zone');
+
+             document.getElementById('check-activity3').addEventListener('click', () => {
+                let allItemsPlaced = sourceReqs.children.length === 0;
+                 if (!allItemsPlaced) {
+                     showFeedback('feedback-activity3', 'الرجاء تصنيف جميع المتطلبات أولاً.', false);
+                     return;
+                 }
+
+                 let isCorrect = true;
+                 dropZones3.forEach(zone => {
+                     const reqType = zone.dataset.req;
+                     zone.querySelectorAll('.draggable').forEach(req => {
+                         if (req.dataset.req !== reqType) {
+                             isCorrect = false;
+                         }
+                     });
+                 });
+
+                 if (isCorrect) {
+                     showFeedback('feedback-activity3', 'صحيح! لقد صنفت المتطلبات بشكل رائع.', true);
+                 } else {
+                     showFeedback('feedback-activity3', 'إجابة غير صحيحة. راجع تصنيفاتك.', false);
+                 }
+             });
+            
+            document.getElementById('reset-activity3').addEventListener('click', () => {
+                sourceReqs.innerHTML = initialActivity3HTML;
+                dropZones3.forEach(zone => zone.innerHTML = '');
+                document.getElementById('feedback-activity3').style.display = 'none';
+            });
+
+
+            // --- Activity 4: Quiz ---
+            document.getElementById('check-activity4').addEventListener('click', () => {
+                const selected = document.querySelector('input[name="quiz-method"]:checked');
+                if (!selected) {
+                    showFeedback('feedback-activity4', 'الرجاء اختيار إجابة أولاً.', false);
+                    return;
+                }
+                
+                if (selected.value === 'questionnaires') {
+                    showFeedback('feedback-activity4', 'إجابة صحيحة! الاستبانات هي الطريقة المثلى للوصول لعدد كبير من المستخدمين بسرعة وتكلفة منخفضة.', true);
+                } else {
+                    showFeedback('feedback-activity4', `إجابة غير صحيحة. الـ "${selected.nextElementSibling.textContent}" ليست الخيار الأمثل في هذا السيناريو.`, false);
+                }
+            });
+
+            // --- Activity 6: Spinning Wheel ---
+            const studentNames = ["نورة", "سارة", "فاطمة", "مريم", "هند", "جواهر", "لطيفة", "حصة", "شهد", "أمل", "منيرة", "ريم", "عبير", "دلال", "أريج"];
+            const spinButton = document.getElementById('spin-button');
+            const wheelContainer = document.getElementById('wheel-container');
+            const resultDisplay = document.querySelector('#student-name-result p');
+            let isSpinning = false;
+            let currentRotation = 0;
+
+            spinButton.addEventListener('click', () => {
+                if (isSpinning) return;
+                
+                isSpinning = true;
+                resultDisplay.classList.add('invisible');
+
+                const randomIndex = Math.floor(Math.random() * studentNames.length);
+                const selectedStudent = studentNames[randomIndex];
+                
+                // Spin animation
+                const randomSpins = Math.floor(Math.random() * 5) + 5; // 5 to 9 full spins
+                const randomDegree = Math.floor(Math.random() * 360);
+                const finalRotation = currentRotation + (randomSpins * 360) + randomDegree;
+                
+                wheelContainer.style.transform = `rotate(${finalRotation}deg)`;
+                currentRotation = finalRotation;
+
+                setTimeout(() => {
+                    resultDisplay.textContent = `الطالبة المختارة هي: ${selectedStudent}`;
+                    resultDisplay.classList.remove('invisible');
+                    isSpinning = false;
+                }, 4000); // Must match transition duration
+            });
+
+
+            // --- Universal Drag and Drop event listeners ---
+            function setupDraggables() {
+                document.querySelectorAll('.draggable').forEach(item => {
+                    item.addEventListener('dragstart', handleDragStart);
+                    item.addEventListener('dragend', handleDragEnd);
+                });
+            }
+
+            function setupDropZones() {
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    zone.addEventListener('dragover', handleDragOver);
+                    zone.addEventListener('dragenter', handleDragEnter);
+                    zone.addEventListener('dragleave', handleDragLeave);
+                    zone.addEventListener('drop', handleDrop);
+                });
+            }
+
+            setupDraggables();
+            setupDropZones();
+
+            // Re-initialize draggables after reset
+            document.querySelectorAll('button[id^="reset-"]').forEach(button => {
+                button.addEventListener('click', () => {
+                    setTimeout(() => {
+                        setupDraggables();
+                    }, 0);
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
+
