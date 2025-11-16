@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي مقارنة تنظيم الأيقونات</title>
+    <!-- تضمين Tailwind CSS لإعداد التصميم والاستجابة -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* تعريف خط Inter ليتناسب مع إرشادات التصميم */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937; /* خلفية داكنة */
+            color: #d1d5db;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            @apply max-w-5xl w-full p-8 bg-gray-800 rounded-3xl shadow-2xl;
+        }
+
+        .phone-wrapper {
+            @apply flex flex-col items-center justify-start relative;
+        }
+
+        .phone-svg {
+            /* إزالة الكيرسر وتأثير الهوفر من الجوال ليركز النقر على الزر */
+            cursor: default;
+            transition: none; 
+        }
+        
+        /* تنسيقات SVG لضمان ظهور الرموز والألوان */
+        svg {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border-radius: 40px;
+        }
+
+        /* لضمان رؤية الألوان داخل SVG */
+        .svg-text { font-family: 'Inter', sans-serif; font-size: 14px; }
+        .svg-icon { fill: #f3f4f6; }
+
+        /* تنسيق النافذة المنبثقة (Modal) */
+        .modal {
+            @apply fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4;
+        }
+        .modal-content {
+            @apply bg-gray-800 rounded-xl max-w-lg w-full p-6 shadow-2xl;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-emerald': '#10b981',
+                        'accent-red': '#ef4444',
+                    }
+                }
+            }
+        }
+
+        function showModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function hideModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+        
+        // عرض النافذة المنبثقة للتفاصيل
+        function showDetailsModal(title, contentHtml) {
+            const modal = document.getElementById('detailsModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalBody').innerHTML = contentHtml;
+            showModal('detailsModal');
+        }
+
+        // تفاصيل الواجهة (A) السيئة
+        function showDetailsA() {
+            const title = "❌ تفاصيل الواجهة (A): المتناثرة والبطيئة";
+            const content = `
+                <div class="space-y-4">
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <h3 class="font-bold text-base text-accent-red mb-1">1. انتهاك قانون التقارب (Proximity)</h3>
+                        <p class="text-sm text-gray-300">الأيقونات متناثرة في زوايا ومناطق مختلفة من الشاشة، مما يجبر المستخدم على البحث عن كل وظيفة. هذا يزيد من زمن التفاعل ويقلل من قابلية التعلم.</p>
+                    </div>
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <h3 class="font-bold text-base text-accent-red mb-1">2. سوء تطبيق قانون فيتز (Fitt's Law)</h3>
+                        <p class="text-sm text-gray-300">الأهداف (الأيقونات) متباعدة عن منطقة الوصول الطبيعية للإبهام، مما يجعل النقر عليها غير مريح ويزيد من فرص الأخطاء.</p>
+                    </div>
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <h3 class="font-bold text-base text-accent-red mb-1">3. ضعف الاتساق البصري</h3>
+                        <p class="text-sm text-gray-300">عدم وجود شريط تنقل موحد يشتت الانتباه عن المحتوى الرئيسي ويجعل التنقل بين الصفحات غير متوقع.</p>
+                    </div>
+                </div>
+            `;
+            showDetailsModal(title, content);
+        }
+
+        // تفاصيل الواجهة (B) الممتازة
+        function showDetailsB() {
+            const title = "✅ تفاصيل الواجهة (B): السلسة والمتقنة";
+            const content = `
+                <div class="space-y-4">
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <h3 class="font-bold text-base text-primary-emerald mb-1">1. تطبيق منطقة الإبهام (Thumb Zone)</h3>
+                        <p class="text-sm text-gray-300">تجميع الأيقونات في شريط تنقل سفلي يضعها في المنطقة الأكثر راحة وسهولة للوصول بالإبهام عند استخدام الجوال بيد واحدة، مما يسرّع التفاعل.</p>
+                    </div>
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <h3 class="font-bold text-base text-primary-emerald mb-1">2. التنظيم والوضوح (Cohesion)</h3>
+                        <p class="text-sm text-gray-300">تجميع العناصر ذات الصلة معًا يقلل من الحمل المعرفي. المستخدم يعرف دائمًا أين يجد خيارات التنقل الرئيسية.</p>
+                    </div>
+                    <div class="bg-gray-700 p-3 rounded-lg">
+                        <h3 class="font-bold text-base text-primary-emerald mb-1">3. التغذية الراجعة البصرية</h3>
+                        <p class="text-sm text-gray-300">استخدام لون التوكيد (الأخضر الزمردي) للأيقونة النشطة يخبر المستخدم فوراً بموقعه الحالي في التطبيق بوضوح تام.</p>
+                    </div>
+                </div>
+            `;
+            showDetailsModal(title, content);
+        }
+    </script>
+</head>
+<body class="p-4">
+
+    <div class="container">
+        <h1 class="text-3xl font-extrabold text-center mb-6">تحدي مقارنة تنظيم الواجهات (التناثر مقابل السلاسة)</h1>
+        <p class="text-center mb-8 text-gray-400">انقر على زر **"انقر للتفاصيل"** أسفل كل جوال لفهم المبادئ التصميمية المطبقة في كل واجهة.</p>
+        
+        <div class="flex flex-col md:flex-row justify-around gap-16 md:gap-4">
+            
+            <!-- الجوال الأول: الواجهة (A) السيئة - الأيقونات متناثرة -->
+            <div class="phone-wrapper">
+                <h2 class="text-xl font-bold mb-3 text-accent-red">الواجهة (A): المتناثرة والبطيئة</h2>
+                <svg id="phone-A" class="phone-svg" width="250" height="480" viewBox="0 0 250 480">
+                    <!-- هيكل الجوال (البيزيل) -->
+                    <rect x="0" y="0" width="250" height="480" rx="30" fill="#2c3e50" stroke="#1f2937" stroke-width="4"/>
+                    
+                    <!-- الشاشة الخلفية (البيج) -->
+                    <rect x="10" y="10" width="230" height="460" rx="20" fill="#34495e"/>
+                    
+                    <!-- شاشة التطبيق (الداكنة) -->
+                    <rect x="15" y="15" width="220" height="450" rx="15" fill="#1f2937"/>
+                    
+                    <!-- العنوان -->
+                    <text x="125" y="45" text-anchor="middle" fill="#f3f4f6" font-size="16" font-weight="bold" class="svg-text">لوحة التحكم</text>
+
+                    <!-- محتوى وهمي -->
+                    <rect x="25" y="65" width="200" height="150" rx="10" fill="#2c3e50"/>
+                    <text x="125" y="140" text-anchor="middle" fill="#d1d5db" font-size="12" class="svg-text">عرض المهام والأنشطة الرئيسية</text>
+
+                    <!-- الأيقونات المتناثرة (Scattered Icons) -->
+                    <!-- 1. الرئيسية (Top Left) -->
+                    <rect x="25" y="25" width="30" height="30" rx="8" fill="#546e7a"/>
+                    <text x="40" y="45" text-anchor="middle" fill="#f3f4f6" font-size="18">🏠</text> 
+
+                    <!-- 2. الإعدادات (Middle Right) -->
+                    <rect x="195" y="240" width="30" height="30" rx="8" fill="#546e7a"/>
+                    <text x="210" y="260" text-anchor="middle" fill="#f3f4f6" font-size="18">⚙️</text>
+
+                    <!-- 3. التنبيهات (Top Right) -->
+                    <rect x="195" y="25" width="30" height="30" rx="8" fill="#546e7a"/>
+                    <text x="210" y="45" text-anchor="middle" fill="#f3f4f6" font-size="18">🔔</text>
+
+                    <!-- 4. الملف الشخصي (Bottom Center) -->
+                    <rect x="110" y="420" width="30" height="30" rx="8" fill="#546e7a"/>
+                    <text x="125" y="440" text-anchor="middle" fill="#f3f4f6" font-size="18">👤</text> 
+
+                </svg>
+                <!-- زر انقر للتفاصيل للواجهة A -->
+                <button onclick="showDetailsA()" class="mt-4 p-2 w-48 rounded-lg font-bold text-sm bg-red-600 hover:bg-red-700 transition duration-150">انقر للتفاصيل 🚨</button>
+            </div>
+
+            <!-- الجوال الثاني: الواجهة (B) الممتازة - الأيقونات مجمعة (شريط سفلي) -->
+            <div class="phone-wrapper">
+                <h2 class="text-xl font-bold mb-3 text-primary-emerald">الواجهة (B): السلسة والمتقنة</h2>
+                <svg id="phone-B" class="phone-svg" width="250" height="480" viewBox="0 0 250 480">
+                    <!-- هيكل الجوال (البيزيل) -->
+                    <rect x="0" y="0" width="250" height="480" rx="30" fill="#2c3e50" stroke="#1f2937" stroke-width="4"/>
+                    
+                    <!-- الشاشة الخلفية (البيج) -->
+                    <rect x="10" y="10" width="230" height="460" rx="20" fill="#34495e"/>
+                    
+                    <!-- شاشة التطبيق (الداكنة) -->
+                    <rect x="15" y="15" width="220" height="450" rx="15" fill="#1f2937"/>
+
+                    <!-- العنوان -->
+                    <text x="125" y="45" text-anchor="middle" fill="#f3f4f6" font-size="16" font-weight="bold" class="svg-text">لوحة التحكم</text>
+                    
+                    <!-- محتوى وهمي -->
+                    <rect x="25" y="65" width="200" height="350" rx="10" fill="#2c3e50"/>
+                    <text x="125" y="240" text-anchor="middle" fill="#d1d5db" font-size="12" class="svg-text">عرض المهام والأنشطة الرئيسية</text>
+
+                    <!-- شريط التنقل السفلي الموحد (Cohesive Navigation Bar) -->
+                    <rect x="15" y="410" width="220" height="55" fill="#2c3e50"/>
+                    
+                    <!-- 1. الرئيسية (Selected) -->
+                    <text x="45" y="445" text-anchor="middle" fill="#1abc9c" font-size="20">🏠</text> 
+                    <text x="45" y="460" text-anchor="middle" fill="#1abc9c" font-size="8" class="svg-text">الرئيسية</text>
+
+                    <!-- 2. الإعدادات -->
+                    <text x="95" y="445" text-anchor="middle" fill="#f3f4f6" font-size="20">⚙️</text>
+                    <text x="95" y="460" text-anchor="middle" fill="#f3f4f6" font-size="8" class="svg-text">إعدادات</text>
+
+                    <!-- 3. التنبيهات -->
+                    <text x="145" y="445" text-anchor="middle" fill="#f3f4f6" font-size="20">🔔</text>
+                    <text x="145" y="460" text-anchor="middle" fill="#f3f4f6" font-size="8" class="svg-text">تنبيهات</text>
+
+                    <!-- 4. الملف الشخصي -->
+                    <text x="195" y="445" text-anchor="middle" fill="#f3f4f6" font-size="20">👤</text> 
+                    <text x="195" y="460" text-anchor="middle" fill="#f3f4f6" font-size="8" class="svg-text">ملفي</text>
+
+                </svg>
+                <!-- زر انقر للتفاصيل للواجهة B -->
+                <button onclick="showDetailsB()" class="mt-4 p-2 w-48 rounded-lg font-bold text-sm bg-primary-emerald hover:bg-emerald-600 transition duration-150">انقر للتفاصيل ✅</button>
+            </div>
+            
+        </div>
+
+        <!-- قسم فكرة الأستاذة مشاعل الثبيتي (الآن مخصص ومختصر) -->
+        <div class="mt-12 pt-6 border-t border-gray-700 w-full">
+            <h2 class="text-2xl font-extrabold text-center mb-4 text-primary-emerald">فكرة وتصميم الأستاذة / مشاعل الثبيتي</h2>
+            <div class="bg-gray-700 p-6 rounded-xl shadow-inner text-center">
+                <p class="text-gray-200 text-lg leading-relaxed">
+                    تعتمد الفكرة على **المقارنة التفاعلية والمباشرة** بين قرارين تصميميين متعاكسين (التناثر مقابل التجميع). الهدف هو استخلاص المبدأ التعليمي: **التنظيم والتقارب يقلل من زمن البحث ويزيد من فعالية الوصول، خاصة في منطقة الإبهام المريحة.**
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- النافذة المنبثقة للتفاصيل (Modal Structure) -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle" class="text-2xl font-bold mb-4 text-white"></h2>
+            <div id="modalBody" class="space-y-4 max-h-96 overflow-y-auto">
+                <!-- محتوى التفاصيل يظهر هنا -->
+            </div>
+            <button onclick="hideModal('detailsModal')" class="mt-6 w-full p-3 rounded-lg font-semibold bg-blue-600 hover:bg-blue-700 transition duration-150 text-white">إغلاق</button>
+        </div>
+    </div>
+
+</body>
+</html>
