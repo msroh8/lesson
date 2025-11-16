@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدرس الثالث: التقنيات الناشئة</title>
+    <!-- تضمين خطوط جوجل (خط Inter لخلفية التصميم) + Noto Sans Arabic للعربية -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* تعريف الألوان والخطوط */
+        :root {
+            --primary-color: #004d40; /* أخضر غامق أنيق */
+            --secondary-color: #1de9b6; /* أخضر فيروزي فاتح */
+            --background-light: #f4f6f9; /* خلفية فاتحة جداً */
+            --text-dark: #333;
+            --text-light: #fff;
+            --sidebar-width: 280px;
+            --max-content-width: 900px;
+        }
+
+        /* تطبيق الخط العربي على جميع العناصر */
+        body {
+            font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+            text-align: right;
+            direction: rtl;
+        }
+
+        /* الهيدر الاحترافي */
+        .header {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .teacher-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* SVG للأيقونة */
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            margin-left: 15px;
+            fill: var(--secondary-color);
+        }
+
+        /* حاوية الصفحة الرئيسية لتقييد العرض وتوزيع العناصر */
+        .main-container {
+            display: flex;
+            max-width: var(--max-content-width);
+            margin: 30px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            background-color: #fff;
+        }
+        
+        /* القائمة الجانبية (Sidebar) */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 25px 0;
+            flex-shrink: 0; /* لمنع تقلص القائمة */
+            border-radius: 0 12px 12px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            padding: 0 20px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            border-right: 4px solid transparent;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border-right: 4px solid var(--text-light);
+            font-weight: 700;
+        }
+
+        .nav-item span {
+            margin-left: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .nav-item.story-section {
+            background-color: rgba(255, 255, 255, 0.15);
+            margin-bottom: 15px;
+        }
+        .nav-item.story-section.active {
+             background-color: var(--secondary-color);
+        }
+
+        /* منطقة المحتوى الرئيسية */
+        .content-area {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* تنسيق المحتوى داخل الأقسام */
+        .content-section h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-box {
+            background-color: var(--background-light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .content-box h3 {
+            color: var(--primary-color);
+            border-right: 3px solid var(--secondary-color);
+            padding-right: 10px;
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .content-box ul {
+            list-style: none;
+            padding-right: 0;
+        }
+
+        .content-box ul li {
+            position: relative;
+            padding-right: 25px;
+            margin-bottom: 10px;
+        }
+
+        .content-box ul li::before {
+            content: '•';
+            color: var(--secondary-color);
+            font-weight: 900;
+            position: absolute;
+            right: 0;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        /* أيقونة السؤال */
+        .question-icon {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, background-color 0.2s;
+            margin-right: 15px;
+        }
+
+        .question-icon:hover {
+            transform: scale(1.1);
+            background-color: #00c793;
+        }
+        
+        /* تنسيق القصة وفوائدها */
+        .story-content {
+            background-color: #e8f5e9; /* خلفية خضراء فاتحة للقصة */
+            border: 1px solid #c8e6c9;
+        }
+
+        .benefits-list {
+            list-style: decimal;
+            padding-right: 20px;
+            margin-top: 20px;
+        }
+
+        .benefits-list li {
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        /* النشاط التفاعلي (الاختبار) */
+        #quiz-section {
+            text-align: center;
+        }
+        .quiz-question {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            text-align: right;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .quiz-question p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .quiz-option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px 15px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: right;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .quiz-option:hover {
+            background-color: #e0f2f1;
+            border-color: var(--secondary-color);
+        }
+        .quiz-option.correct {
+            background-color: #c8e6c9; /* أخضر فاتح جداً */
+            border-color: #388e3c;
+        }
+        .quiz-option.incorrect {
+            background-color: #ffcdd2; /* أحمر فاتح جداً */
+            border-color: #d32f2f;
+        }
+        .quiz-result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #d32f2f;
+        }
+        .quiz-result.passed {
+            color: #388e3c;
+        }
+        .quiz-button {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+        .quiz-button:hover {
+            background-color: #00796b;
+        }
+
+
+        /* نموذج النافذة المنبثقة (Modal) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 400px;
+            position: relative;
+            text-align: right;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: left; /* لجعله في الزاوية العلوية اليسرى (في الـ RTL) */
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        /* تنسيق التقويم */
+        .closure-points {
+            list-style: none;
+            padding: 0;
+        }
+        .closure-points li {
+            background-color: #e3f2fd; /* أزرق فاتح للملخص */
+            padding: 15px;
+            margin-bottom: 10px;
+            border-right: 5px solid #2196f3;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        /* تنسيق الجوال */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .sidebar {
+                width: 100%;
+                border-radius: 0;
+                padding: 15px 0;
+                max-height: 250px;
+            }
+            .sidebar h3 {
+                margin-bottom: 10px;
+            }
+            .content-area {
+                padding: 20px;
+            }
+            .nav-list {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 10px;
+            }
+            .nav-item {
+                flex-shrink: 0;
+                padding: 8px 15px;
+                margin-left: 10px;
+                border-right: none;
+                border-bottom: 4px solid transparent;
+            }
+            .nav-item.active {
+                border-right: none;
+                border-bottom: 4px solid var(--text-light);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <!-- أيقونة SVG تمثل التقنيات الناشئة/الواقع الافتراضي -->
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- أيقونة نظارة VR / الواقع الافتراضي -->
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17 14H15V12H17V14ZM12 14H10V12H12V14ZM9 14H7V12H9V14Z" fill="currentColor" opacity="0.3"/>
+            <path d="M12 5C8.96 5 6.21 6.55 4.5 9H19.5C17.79 6.55 15.04 5 12 5ZM4 12V9H6V12H4ZM20 12V9H18V12H20Z" fill="var(--secondary-color)"/>
+            <path d="M12 18C15.31 18 18 15.31 18 12V10H6V12C6 15.31 8.69 18 12 18ZM15 14H17V12H15V14ZM10 14H12V12H10V14ZM7 14H9V12H7V14Z" fill="currentColor"/>
+        </svg>
+        <div>
+            <h1>الدرس الثالث: التقنيات الناشئة</h1>
+            
+        </div>
+        <div class="teacher-info">
+            <p>إشراف: المعلمة حنان الطويرقي</p>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <!-- القائمة الجانبية (Navigation Sidebar) -->
+        <aside class="sidebar">
+            <h3>قائمة الدرس</h3>
+            <ul class="nav-list">
+                <!-- القصة الممهدة -->
+                <li class="nav-item story-section" data-target="story-section">
+                    <span>📚</span> القصة الممهدة وفوائدها
+                </li>
+                <!-- أقسام المحتوى مرتبة -->
+                <li class="nav-item" data-target="intro-section">
+                    <span>💡</span> مقدمة الدرس
+                </li>
+                <li class="nav-item" data-target="vr-section">
+                    <span>🕶️</span> الواقع الافتراضي (VR)
+                </li>
+                <li class="nav-item" data-target="ar-section">
+                    <span>📱</span> الواقع المعزز (AR)
+                </li>
+                <li class="nav-item" data-target="hololens-section">
+                    <span>🔬</span> نظارة مايكروسوفت هولولنز
+                </li>
+                <!-- تم استبعاد تجربة المستخدم بناءً على طلبك -->
+                <li class="nav-item" data-target="quiz-section">
+                    <span>✅</span> نشاط تقارير (اختبار سريع)
+                </li>
+                <li class="nav-item" data-target="closure-section">
+                    <span>🔚</span> إغلاق الدرس والملخص
+                </li>
+            </ul>
+        </aside>
+
+        <!-- منطقة عرض المحتوى -->
+        <section class="content-area">
+            
+            <!-- 1. القصة الممهدة وفوائدها -->
+            <div id="story-section" class="content-section">
+                <h2>القصة الممهدة: رحلة غواصة في الصحراء</h2>
+                <div class="content-box story-content">
+                    <h3>القصة الواقعية: تدريب "ناسا" على المريخ</h3>
+                    <p>في وكالة الفضاء الأمريكية (ناسا)، يواجه المهندسون تحدياً كبيراً: كيف يمكنهم التحكم بمركبة استطلاعية مثل "كيوريوسيتي" على سطح المريخ والمسافة شاسعة والتأخير في الإشارة يصل إلى دقائق؟</p>
+                    <p>في عام 2016، لم ينتظر مهندسو "ناسا" مركبة فضائية جديدة للذهاب إلى المريخ. بدلاً من ذلك، ارتدوا نظارة "هولولنز" (تقنية الواقع المعزز). هذه النظارة سمحت لهم برؤية البيئة الحقيقية حولهم (مثل مختبرهم في كاليفورنيا)، وفي الوقت نفسه، عرضت فوقها صوراً ثلاثية الأبعاد وواقعية جداً لتضاريس كوكب المريخ تم التقاطها بواسطة المركبات الحقيقية. تمكن المهندسون من "التجول" افتراضياً على المريخ، ووضع علامات افتراضية لتوجيه المركبة الحقيقية، وإجراء القياسات دون مغادرة الأرض. كانوا يعملون وكأنهم على الكوكب في الواقع.</p>
+                    <p class="teacher-note" style="font-style: italic; color: #00796b;">هذه القصة تبرز قوة دمج العالم الرقمي بالواقع، وهي تطبيق مباشر لتقنية نظارة مايكروسوفت هولولنز المذكورة في محتوى الدرس.</p>
+                </div>
+
+                <div class="content-box">
+                    <h3>فوائد مستخلصة من القصة</h3>
+                    <ol class="benefits-list">
+                        <li><strong>التغلب على الحدود المادية:</strong> سمحت التقنية بالعمل في بيئة بعيدة (المريخ) دون الحاجة للسفر فعلياً.</li>
+                        <li><strong>التدريب والمحاكاة الفعالة:</strong> وفرت التقنية محاكاة عالية الدقة للمهندسين لاتخاذ قرارات حرجة وواقعية.</li>
+                        <li><strong>دمج الواقع بالمعلومات:</strong> أظهرت كيف يمكن للتقنية دمج البيانات الرقمية الهامة (تضاريس المريخ) مع بيئة العمل الفعلية (المختبر).</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 2. مقدمة الدرس (محتوى) -->
+            <div id="intro-section" class="content-section">
+                <h2>مقدمة الدرس <span class="question-icon" data-question="ما هو الاسم الذي يطلق على الابتكارات الرقمية التي تعتمد على التقنيات المتقدمة؟">؟</span></h2>
+                <div class="content-box">
+                    <p>لقد غيرت التقنية الطريقة التي نعيش بها، وأصبحنا نسمع عن الابتكارات الرقمية التي تعتمد على التقنيات المتقدمة بشكل يومي.</p>
+                    <p>يُطلق على هذه الابتكارات اسم <strong>"التقنيات الناشئة"</strong>، والتي من المتوقع أنها ستعزز من العملية التعليمية التفاعلية وستغير من بيئة الأعمال والمجتمع بشكل جوهري.</p>
+                </div>
+            </div>
+
+            <!-- 3. الواقع الافتراضي (VR) (محتوى) -->
+            <div id="vr-section" class="content-section">
+                <h2>الواقع الافتراضي (Virtual Reality - VR) <span class="question-icon" data-question="ما الفرق بين الواقع الافتراضي (VR) والواقع المختلط (MR)؟">؟</span></h2>
+                <div class="content-box">
+                    <h3>تعريف الواقع الافتراضي</h3>
+                    <p>هو واقع محوسب <strong>يحاكي بيئة حقيقية</strong> ويسمح للمستخدم <strong>التفاعل معه في عالم افتراضي</strong>. يتم استخدامه لجميع التجارب التي يمكن إنشاؤها بالمحاكاة الرقمية بشكل كامل.</p>
+                </div>
+                <div class="content-box">
+                    <h3>الواقع المختلط (Mixed Reality - MR)</h3>
+                    <p>يشير إلى تلك التجارب التي يتم إنشاؤها <strong>بمزيج من المحتوى الرقمي والعالم الحقيقي</strong>.</p>
+                </div>
+                <div class="content-box">
+                    <h3>ملاحظة حول التكلفة</h3>
+                    <p>تتفاوت تكلفة أجهزة الواقع الافتراضي بحسب دقة وجودة العرض، بالإضافة إلى مستوى الانغمار في العالم الافتراضي.</p>
+                </div>
+            </div>
+
+            <!-- 4. الواقع المعزز (AR) (محتوى) -->
+            <div id="ar-section" class="content-section">
+                <h2>الواقع المعزز (Augmented Reality - AR) <span class="question-icon" data-question="اذكر اثنين من أبرز العوائق التي تواجه تقنية الواقع المعزز (AR).">؟</span></h2>
+                <div class="content-box">
+                    <h3>تعريف الواقع المعزز</h3>
+                    <p>تقنية تعتمد على <strong>جلب العناصر المصممة بجهاز الحاسب، ودمجها مع البيئة الواقعية</strong>، بهدف تعزيز الواقع بهذه العناصر.</p>
+                </div>
+                <div class="content-box">
+                    <h3>تطبيقات الواقع المعزز</h3>
+                    <ul>
+                        <li><strong>التعلم القائم على المحاكاة.</strong></li>
+                        <li><strong>المجال الطبي:</strong> كالتدريب على الجراحات المختلفة وحديثاً في إجراء العمليات (باستخدام تراكيب الصور الافتراضية).</li>
+                        <li><strong>الألعاب والترفيه.</strong></li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>مشاكل وعوائق الواقع المعزز</h3>
+                    <p>يواجه الواقع المعزز العديد من المشاكل، ومن أبرزها:</p>
+                    <ul>
+                        <li><strong>مشاكل الخصوصية:</strong> كما حدث مع نظارات جوجل للواقع المعزز.</li>
+                        <li><strong>المشاكل التقنية:</strong> المتعلقة بالحصول على صورة جيدة.</li>
+                        <li><strong>تجنب التشتت.</strong></li>
+                        <li><strong>العمل في ظروف الإضاءة المختلفة.</strong></li>
+                        <li><strong>القدرة على تمييز الأشياء والأشخاص.</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 5. نظارة مايكروسوفت هولولنز (محتوى) -->
+            <div id="hololens-section" class="content-section">
+                <h2>تقنية نظارة مايكروسوفت هولولنز (Hololens) <span class="question-icon" data-question="ما هي السمة الرئيسة التي تميز تفاعل هولولنز مع العالم الحقيقي؟">؟</span></h2>
+                <div class="content-box">
+                    <h3>هولولنز: الواقع المعزز المُحسّن</h3>
+                    <p>هولولنز هي شكل **مُحسّن من الواقع المعزز**، تتميز بما يلي:</p>
+                    <ul>
+                        <li>تحتوي على **نظام جهاز حاسب تشغيلي** متكامل.</li>
+                        <li>تستطيع إجراء **العمليات الحسابية المعقدة والعرض ثلاثي الأبعاد** دون الحاجة للاتصال بجهاز حاسب خارجي.</li>
+                        <li>تعمل شاشتها الشفافة على **تراكب العناصر الرقمية على عناصر العالم الحقيقي** (على عكس VR التي تضعك في عالم افتراضي بالكامل).</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>التفاعل والحركة</h3>
+                    <p>عند استخدام هولولنز، يمكن للمستخدم **الحركة بحرية في أنحاء الغرفة** للحصول على تجربة افتراضية مثيرة (على العكس من نظارات VR التي قد تتيح التنقل عبر جهاز تحكم يدوي).</p>
+                    <p><strong>السمة الرئيسة:</strong> إتاحة **التفاعل الفوري** بين المحتوى الرقمي ومحتوى العالم الحقيقي.</p>
+                </div>
+                <div class="content-box">
+                    <h3>أبرز الاستخدامات</h3>
+                    <p>التحكم بالمركبة الاستطلاعية على سطح كوكب المريخ (كما في القصة الممهدة)، حيث توفر لموظفي "ناسا" القدرة على التجوال الافتراضي ووضع علامات على تضاريس المريخ.</p>
+                </div>
+            </div>
+            
+            <!-- 6. النشاط التفاعلي (الاختبار السريع) -->
+            <div id="quiz-section" class="content-section">
+                <h2>نشاط تقارير: اختبار سريع</h2>
+                <div id="quiz-container">
+                    <!-- أسئلة الاختبار ستعرض هنا بواسطة JavaScript -->
+                </div>
+                <div id="quiz-result" class="quiz-result"></div>
+                <button class="quiz-button" onclick="submitQuiz()">إرسال الإجابات والتقييم</button>
+            </div>
+
+            <!-- 7. إغلاق الدرس والملخص -->
+            <div id="closure-section" class="content-section">
+                <h2>إغلاق الدرس: ملخص أبرز النقاط</h2>
+                <div class="content-box">
+                    <h3>ملخص التقنيات الناشئة</h3>
+                    <ul class="closure-points">
+                        <li><strong>التقنيات الناشئة:</strong> هي الابتكارات الرقمية المتقدمة التي ستغير التعليم والأعمال والمجتمع جوهرياً.</li>
+                        <li><strong>الواقع الافتراضي (VR):</strong> عالم محوسب بالكامل يحاكي بيئة حقيقية (انغمار كامل).</li>
+                        <li><strong>الواقع المختلط (MR):</strong> مزيج من المحتوى الرقمي والعالم الحقيقي.</li>
+                        <li><strong>الواقع المعزز (AR):</strong> دمج عناصر رقمية مع البيئة الواقعية لتعزيزها.</li>
+                        <li><strong>هولولنز (Hololens):</strong> شكل محسّن من AR بنظام حاسب داخلي وإمكانية التفاعل الفوري والحركة الحرة، وأبرز استخداماته التحكم بمركبة المريخ.</li>
+                        <!-- تم استبعاد تجربة المستخدم من الملخص -->
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- النافذة المنبثقة العامة للأسئلة -->
+    <div id="text-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>سؤال تفاعلي</h3>
+            <!-- ملاحظة: تم استخدام class بدلاً من id هنا لتجنب تكرار المعرّف -->
+            <p class="modal-question-text" style="font-weight: 600; font-size: 1.1rem; color: #555;"></p>
+        </div>
+    </div>
+
+    <script>
+        // *** تلافي خطأ تكرار المُعرّف (ID) ***
+        // النافذة المنبثقة (Modal) لديها ID واحد هو "text-modal".
+        // نص السؤال بداخلها يستخدم الآن class="modal-question-text" لتجنب تكرار ID داخل الأقسام.
+
+        const navigationItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+        const modal = document.getElementById('text-modal');
+        const modalQuestionText = modal.querySelector('.modal-question-text');
+        const closeButton = modal.querySelector('.close-button');
+        const questionIcons = document.querySelectorAll('.question-icon');
+        const quizContainer = document.getElementById('quiz-container');
+
+        // قائمة أقسام الدرس بالترتيب بعد استبعاد UX
+        const sectionsList = ['story-section', 'intro-section', 'vr-section', 'ar-section', 'hololens-section', 'quiz-section', 'closure-section'];
+
+        // 1. وظيفة تبديل الأقسام
+        function showSection(targetId) {
+            // إخفاء جميع الأقسام
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            // إظهار القسم المطلوب
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // تحديث حالة النشاط في القائمة الجانبية
+            navigationItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-target') === targetId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // إذا كان القسم هو الاختبار، قم بإنشاء الأسئلة
+            if (targetId === 'quiz-section') {
+                renderQuiz();
+            }
+        }
+
+        // 2. معالجة النقر على القائمة الجانبية
+        navigationItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                showSection(targetId);
+            });
+        });
+
+        // 3. معالجة النقر على أيقونات السؤال (؟)
+        questionIcons.forEach(icon => {
+            icon.addEventListener('click', function() {
+                const question = this.getAttribute('data-question');
+                
+                // تعبئة النافذة المنبثقة بالنص المطلوب (باستخدام الكلاس لتجنب الخطأ)
+                modalQuestionText.textContent = question;
+                
+                // إظهار النافذة المنبثقة
+                modal.style.display = 'flex';
+            });
+        });
+
+        // 4. إغلاق النافذة المنبثقة
+        closeButton.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+
+        // 5. النشاط التفاعلي (الاختبار السريع)
+        const quizData = [
+            {
+                question: "يتمثل الواقع الافتراضي (VR) في تجارب يتم إنشاؤها بمزيج من المحتوى الرقمي والعالم الحقيقي.",
+                options: ["صحيح", "خطأ"],
+                answer: "خطأ" // لأنه تعريف الواقع المختلط
+            },
+            {
+                question: "من أبرز المشاكل التي واجهت الواقع المعزز (AR) هي القضايا المتعلقة بالخصوصية.",
+                options: ["صحيح", "خطأ"],
+                answer: "صحيح" // مشاكل الخصوصية (نظارات جوجل)
+            },
+            {
+                question: "ما هي التقنية الناشئة التي تحتوي على نظام حاسب تشغيلي متكامل وتسمح للمستخدم بالحركة الحرة لتعزيز التفاعل الفوري؟",
+                options: ["الواقع الافتراضي (VR)", "الواقع المختلط (MR)", "نظارة مايكروسوفت هولولنز", "الواقع المعزز (AR)"],
+                answer: "نظارة مايكروسوفت هولولنز"
+            }
+        ];
+
+        function renderQuiz() {
+            quizContainer.innerHTML = '';
+            quizData.forEach((item, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'quiz-question';
+                qDiv.innerHTML = `
+                    <p>السؤال ${index + 1}: ${item.question}</p>
+                    <div id="options-${index}">
+                        ${item.options.map((option, optIndex) => `
+                            <label class="quiz-option">
+                                <input type="radio" name="q${index}" value="${option}" style="margin-left: 10px;">
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                quizContainer.appendChild(qDiv);
+            });
+             document.getElementById('quiz-result').textContent = '';
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            const totalQuestions = quizData.length;
+
+            quizData.forEach((item, index) => {
+                const optionsDiv = document.getElementById(`options-${index}`);
+                const selectedOption = optionsDiv.querySelector(`input[name="q${index}"]:checked`);
+                const questionDiv = optionsDiv.closest('.quiz-question');
+                
+                // إزالة التنسيقات السابقة
+                optionsDiv.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+                
+                if (selectedOption) {
+                    const selectedValue = selectedOption.value;
+                    const correctOptionElement = Array.from(optionsDiv.querySelectorAll('.quiz-option')).find(label => label.textContent.trim() === item.answer);
+
+                    if (selectedValue === item.answer) {
+                        score++;
+                        questionDiv.style.borderColor = '#388e3c'; // إطار أخضر
+                    } else {
+                        // وضع تنسيق خاطئ على الإجابة المختارة
+                        selectedOption.parentElement.classList.add('incorrect');
+                        questionDiv.style.borderColor = '#d32f2f'; // إطار أحمر
+                    }
+                    // وضع تنسيق صحيح على الإجابة الصحيحة
+                    if(correctOptionElement) {
+                        correctOptionElement.classList.add('correct');
+                    }
+                } else {
+                    // إذا لم يتم الاختيار
+                    questionDiv.style.borderColor = '#fbc02d'; // إطار أصفر للتنبيه
+                }
+            });
+
+            const resultElement = document.getElementById('quiz-result');
+            const percentage = (score / totalQuestions) * 100;
+            resultElement.textContent = `النتيجة: ${score} من ${totalQuestions} (${percentage.toFixed(0)}%)`;
+            
+            resultElement.classList.remove('passed');
+            if (score >= totalQuestions / 2) { // اجتياز الاختبار بأكثر من نصف الأجوبة
+                resultElement.classList.add('passed');
+            }
+        }
+
+        // 6. تهيئة الصفحة الافتراضية
+        window.onload = function() {
+            // عرض القسم الافتراضي (القصة الممهدة)
+            showSection(sectionsList[0]);
+            // إنشاء أسئلة الاختبار عند التحميل الأولي
+            renderQuiz();
+        };
+
+    </script>
+</body>
+</html>
